@@ -8,3 +8,12 @@
     background-size: cover;
     /* background-repeat: no-repeat; */
 }
+.bgLogin{
+    background-image: url('../public/bg-wall.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.bgimageLogin{
+    background-image: url('../public/vector-bg.svg');
+    background-size: cover;
+}

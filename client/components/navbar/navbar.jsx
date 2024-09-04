@@ -12,12 +12,14 @@ const Navbar = () => {
     }
 
   return (
-    <nav className='w-full p-4 font-medium bg-blue-850 text-white relative'>
+    <nav className='w-full p-4 shadow-sm shadow-slate-500 fixed  font-medium text-white bg-blue-850 '>
       <div className='container mx-auto flex justify-between items-center'>
+        <Link href={'/'}>
         <div className='text-lg font-semibold italic hover:text-green-750 flex items-center'>
-          <img src='/logoHead2.svg' className='w-10' alt='Logo'/> 
+          <img src='/icon.svg' className='w-10' alt='Logo'/> 
           EchoThreads
         </div>
+        </Link>
 
         {/* Hamburger Icon for Mobile */}
         <div className='md:hidden flex items-center'>
@@ -34,13 +36,14 @@ const Navbar = () => {
           <Link href='/contact' className='hover:text-green-750 flex items-center'>Contact</Link>
         </div>
 
-        {/* Signup Button - Always Visible */}
+        <Link href='/signup' className='hidden md:block'>
         <div className='mr-5 hidden  items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold md:flex py-1'>
           <IoLogInOutline size={25} />
           Signup
         </div>
+        </Link>
       </div>
-
+    
       {/* Slide-in Mobile Menu */}
       <div
         className={`fixed top-0 right-0 h-full bg-blue-850 text-white w-64 transform transition-transform duration-700 ease-in-out ${
@@ -49,7 +52,7 @@ const Navbar = () => {
       >
          <div className='text-lg font-semibold flex-row w-full justify-between italic  flex items-center'>
           <span className='flex flex-row items-center'>
-          <img src='/logoHead2.svg' className='w-10' alt='Logo'/> 
+          <img src='/icon.svg' className='w-10' alt='Logo'/> 
           EchoThreads
           </span>
           <span
@@ -66,10 +69,12 @@ const Navbar = () => {
         <Link href='/write' className='hover:text-green-750'>Write</Link>
         <Link href='/about' className='hover:text-green-750'>About</Link>
         <Link href='/contact' className='hover:text-green-750'>Contact</Link>
+        <Link href='/signup'>
         <div className='mr-5 md:hidden  items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
           <IoLogInOutline size={25} />
           Signup
         </div>
+        </Link>
       </div>
     </nav>
   )
