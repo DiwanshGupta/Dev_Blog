@@ -12,11 +12,11 @@ const Navbar = () => {
     }
 
   return (
-    <nav className='w-full p-4 shadow-sm shadow-slate-500 fixed  font-medium text-white bg-blue-850 '>
+    <nav className='w-full z-50 p-4 shadow-sm shadow-slate-500 fixed  font-medium text-white bg-blue-850 '>
       <div className='container mx-auto flex justify-between items-center'>
         <Link href={'/'}>
         <div className='text-lg font-semibold italic hover:text-green-750 flex items-center'>
-          <img src='/icon.svg' className='w-10' alt='Logo'/> 
+          <img src='/assets/icon.svg' className='w-10' alt='Logo'/> 
           EchoThreads
         </div>
         </Link>
@@ -30,7 +30,7 @@ const Navbar = () => {
 
         {/* Links - Hidden on Mobile */}
         <div className='hidden md:flex gap-8 items-center'>
-          <Link href='/' className='hover:text-green-750 flex items-center'>Blogs</Link>
+          <Link href='/blog' className='hover:text-green-750 flex items-center'>Blogs</Link>
           <Link href='/write' className='hover:text-green-750 flex items-center'>Write</Link>
           <Link href='/about' className='hover:text-green-750 flex items-center'>About</Link>
           <Link href='/contact' className='hover:text-green-750 flex items-center'>Contact</Link>
@@ -52,7 +52,7 @@ const Navbar = () => {
       >
          <div className='text-lg font-semibold flex-row w-full justify-between italic  flex items-center'>
           <span className='flex flex-row items-center'>
-          <img src='/icon.svg' className='w-10' alt='Logo'/> 
+          <img src='/assets/icon.svg' className='w-10' alt='Logo'/> 
           EchoThreads
           </span>
           <span
@@ -65,7 +65,7 @@ const Navbar = () => {
         </span>
 
         </div>
-        <Link href='/' className='hover:text-green-750'>Blogs</Link>
+        <Link href='/blog' className='hover:text-green-750'>Blogs</Link>
         <Link href='/write' className='hover:text-green-750'>Write</Link>
         <Link href='/about' className='hover:text-green-750'>About</Link>
         <Link href='/contact' className='hover:text-green-750'>Contact</Link>

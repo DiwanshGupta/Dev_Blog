@@ -11,7 +11,7 @@ const page = () => {
         <div className="flex flex-col justify-center items-center">
             <img
                 className="w-auto h-36  items-center m-0 rounded-full "
-                src="icon.svg"
+                src="/assets/icon.svg"
                 alt="Logo"
             />
             <h2 className="text-lg md:text-3xl text-white font-bold text-center ">
@@ -55,7 +55,6 @@ const page = () => {
                         />
                     )}
                 </div>
-                 
             </div>
             <div className="flex items-center justify-between">
                 <div className="flex items-center">

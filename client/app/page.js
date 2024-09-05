@@ -1,5 +1,5 @@
-import Featured from "@/components/featured/featured";
-import Hero from "@/components/hero-section/hero";
+import Featured from "../components/featured/featured";
+import Hero from "../components/hero-section/hero";
 
 export default function Home() {
   return (

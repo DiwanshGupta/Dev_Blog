@@ -2,18 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+
+::selection {
+    background-color: #4caf4fbd; /* Background color of selected text */
+    color: white; /* Text color of selected text */
+  }
 .heroBg{
-    background-image: url('../public/hero.svg'); 
+    background-image: url('../public/assets/hero.svg'); 
     background-color: #141A28;
     background-size: cover;
     /* background-repeat: no-repeat; */
 }
 .bgLogin{
-    background-image: url('../public/bg-wall.svg');
+    background-image: url('../public/assets/bg-wall.svg');
     background-size: cover;
     background-repeat: no-repeat;
 }
 .bgimageLogin{
-    background-image: url('../public/vector-bg.svg');
+    background-image: url('../public/assets/vector-bg.svg');
     background-size: cover;
 }
