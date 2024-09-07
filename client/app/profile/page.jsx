@@ -14,7 +14,6 @@ const page = () => {
             <p className='text-sm font-medium w-full md:w-2/3 justify-center m-auto pb-3'>
             Derrick Henry Benbow is a theologian, essayist and creative who situates her work at the intersections of beauty, faith, feminism and culture.
             </p>
-
         </div>
         <div className='md:mt-24 mt-48 w-full  py-3'>
             <h2 className='font-bold text-2xl '>Author blogs</h2>

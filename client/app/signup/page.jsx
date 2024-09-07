@@ -1,10 +1,38 @@
 "use client"
+import axios from 'axios';
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const page = () => {
     const [show, setShow] = useState(false);
+    const [form, setForm] = useState({
+        name:"",
+        email: "",
+        password: "",
+    });
+
+    const handleInputChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+    const handleSubmit=async(e)=>{
+        e.preventDefault();
+        console.log("aas",form)
+        try {
+            const response=await axios.post('http://localhost:5000/api/v1/auth/signup',
+                form,
+                {
+                    headers: {
+                      "Content-Type": "application/json"
+                    }
+                  }
+            )
+            console.log("response",response)
+        } catch (error) {
+            console.log("error",error)
+        }
+       
+        }
   return (
     <div className="flex items-center bgimageLogin justify-center min-h-screen   ">
     <div className="md:max-w-md max-w-sm bgLogin items-center w-full p-8 space-y-8 my-24  rounded-lg shadow-xl">
@@ -21,7 +49,7 @@ const page = () => {
             Create Your Account
             </h2>
         </div>
-        <form className="space-y-6"  >
+        <form className="space-y-6"  onSubmit={handleSubmit}>
             <div className="space-y-4">
                 <div>
                     <input
@@ -30,6 +58,8 @@ const page = () => {
                         type="name"
                         autoComplete="name"
                         required
+                        value={form.name}
+                        onChange={handleInputChange}
                         className={` block w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm outline-none placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  `}
                         placeholder=" Enter your Name"
                     />
@@ -40,18 +70,22 @@ const page = () => {
                         name="email"
                         type="email"    
                         autoComplete="email"
+                        value={form.email}
+                        onChange={handleInputChange}
                         required
                         className={` block w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm outline-none placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  `}
                         placeholder="Enter Email"
                     />
                 </div>
-                <div className="">
+                <div className="relative">
                     <input
                         id="password"
                         name="password"
                         type={show ? "text" : "password"}
                         autoComplete="current-password"
                         required
+                        value={form.password}
+                        onChange={handleInputChange}
                         className={` block w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm outline-none placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  `}
                         placeholder="Enter your password"
                     />

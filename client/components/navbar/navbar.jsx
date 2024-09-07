@@ -32,8 +32,8 @@ const Navbar = () => {
         <div className='hidden md:flex gap-8 items-center'>
           <Link href='/blog' className='hover:text-green-750 flex items-center'>Blogs</Link>
           <Link href='/write' className='hover:text-green-750 flex items-center'>Write</Link>
-          <Link href='/about' className='hover:text-green-750 flex items-center'>About</Link>
-          <Link href='/contact' className='hover:text-green-750 flex items-center'>Contact</Link>
+          <Link href='' className='hover:text-green-750 flex items-center'>About</Link>
+          <Link href='' className='hover:text-green-750 flex items-center'>Contact</Link>
         </div>
 
         <Link href='/signup' className='hidden md:block'>
@@ -60,15 +60,14 @@ const Navbar = () => {
             className={`hover:text-green-750 cursor-pointer transition-transform duration-200 ${
             isOpen ? 'rotate-180' : 'rotate-0'
             }`}
-        >
+        > 
             <RxCross2 size={25} />
         </span>
-
         </div>
         <Link href='/blog' className='hover:text-green-750'>Blogs</Link>
         <Link href='/write' className='hover:text-green-750'>Write</Link>
-        <Link href='/about' className='hover:text-green-750'>About</Link>
-        <Link href='/contact' className='hover:text-green-750'>Contact</Link>
+        <Link href='' className='hover:text-green-750'>About</Link>
+        <Link href='' className='hover:text-green-750'>Contact</Link>
         <Link href='/signup'>
         <div className='mr-5 md:hidden  items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
           <IoLogInOutline size={25} />
