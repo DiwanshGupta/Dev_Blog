@@ -5,11 +5,12 @@ import { connectDB } from './utils/db_connect.js';
 import authRouter from './routes/user/auth_route.js';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import { config } from './utils/config.js';
 
 
 env.config();
 const app = express();
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: config.frontend_url, credentials: true }));
 app.use(morgan("dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());

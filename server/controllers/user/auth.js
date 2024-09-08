@@ -10,15 +10,15 @@ import { config } from "../../utils/config.js";
 const verificationOptions = {
   httpOnly: true,
   maxAge: 10 * 60 * 1000,  
-  sameSite: 'lax', 
-  secure: process.env.NODE_ENV === 'production',
+  sameSite: config.sameSite, 
+  secure: config.nodeEnv === 'production',
 };
 
 const authOptions = {
   httpOnly: true,
   maxAge: 24 * 60 * 60 * 1000, 
-  sameSite: 'lax', 
-  secure: process.env.NODE_ENV === 'production',
+  sameSite: config.sameSite, 
+  secure: config.nodeEnv === 'production',
 };
 const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZ';  
 const generateUserId = customAlphabet(alphabet, 8);
