@@ -1,5 +1,4 @@
 import React from 'react'
-import { FaSearch } from "react-icons/fa";
 const page = () => {
   return (
         <div className='  p-5    md:pt-24'>
@@ -20,7 +19,7 @@ const page = () => {
                     <h2 className='text-2xl font-semibold '>Comments</h2>
                     <div className='flex gap-4 border-b-2 pb-4  flex-row'>
                     <div className=''>
-                    <img src='/assets/johnny-vargas-9oocgcNo4_0-unsplash.jpg' className='w-16 h-12 rounded-md  '/>
+                    <img src='/assets/johnny-vargas-9oocgcNo4_0-unsplash.jpg' className='w-16 h-12 object-cover rounded-md  '/>
                     </div>
                     <div className='w-full  gap-5'>
                         <textarea className='outline-none mb-3 p-3 rounded-md h-16 w-full border-2' placeholder='Write a comment...'/>
@@ -31,7 +30,7 @@ const page = () => {
                     </div>
                     <div className='flex gap-4  p-3 border-b-2 pb-4 flex-row'>
                     <div className=''>
-                    <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className='w-16 select-none h-12 rounded-md '/>
+                    <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className='w-16 select-none object-cover h-12 rounded-md '/>
                     </div>
                     <div className='w-full  '>
                         <div className=''>

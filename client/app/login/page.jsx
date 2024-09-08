@@ -2,9 +2,50 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import Swal from 'sweetalert2';
+import instance from '../../utils/axios';
 
 const page = () => {
     const [show, setShow] = useState(false);
+    const [form, setForm] = useState({
+        email: "",
+        password: "",
+    });
+    const handleInputChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+    const handleSubmit=async(e)=>{
+        e.preventDefault();
+        console.log(form)
+        try {
+            const response=await instance.post('/auth/login',
+                form,
+                {
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                  }
+            );
+            if(response.status===201){
+                // setloader(false)
+                // setForm({ 
+                //     name:"",
+                //     email: "",
+                //     password: "",})
+                Swal.fire({
+                    title: 'Verify Account',
+                    text: 'user login successfully',
+                    icon: 'success',
+                  })
+                }
+        } catch (error) {
+            Swal.fire({
+                title: 'Some error occured',
+                text:   error.response?.data?.message || 'try again after Sometime',
+                icon: 'warning',
+              })  
+        }
+    }
   return (
     <div className="flex items-center bgimageLogin justify-center min-h-screen  ">
     <div className="md:max-w-md max-w-sm bgLogin items-center w-full p-8 space-y-8   rounded-lg shadow-xl">
@@ -18,12 +59,14 @@ const page = () => {
             EchoThreads
             </h2>
         </div>
-        <form className="space-y-6"  >
+        <form className="space-y-6"  onSubmit={handleSubmit} >
             <div className="space-y-4">
                 <div>
                     <input
                         id="email"
                         name="email"
+                        value={form.name}
+                        onChange={handleInputChange}
                         type="email"
                         autoComplete="email"
                         required
@@ -31,10 +74,12 @@ const page = () => {
                         placeholder="Enter your Email"
                     />
                 </div>
-                <div className="">
+                <div className="relative">
                     <input
                         id="password"
                         name="password"
+                        value={form.name}
+                        onChange={handleInputChange}
                         type={show ? "text" : "password"}
                         autoComplete="current-password"
                         required

@@ -1,7 +1,11 @@
+"use client"
+import { useParams, useSearchParams } from 'next/navigation'
 import React from 'react'
 
 
 const page = () => {
+    const params=useParams()
+    console.log("params",params)
   return (
     <>
     <div className='w-full m-0 h-52'>
@@ -9,7 +13,7 @@ const page = () => {
     </div>
     <div className='md:p-12 p-3 w-4/5 justify-center m-auto relative'>
         <div className='left-[4%] right-[4%]   -top-16   rounded-lg absolute   text-center p-3 items-center bg-white'>
-        <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className='w-16 my-1  select-none h-16 justify-center m-auto rounded-full '/>
+        <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className='w-16 my-1 object-cover  select-none h-16 justify-center m-auto rounded-full '/>
             <h2 className='text-xl font-bold py-3'>Diwansh Gupta</h2>
             <p className='text-sm font-medium w-full md:w-2/3 justify-center m-auto pb-3'>
             Derrick Henry Benbow is a theologian, essayist and creative who situates her work at the intersections of beauty, faith, feminism and culture.

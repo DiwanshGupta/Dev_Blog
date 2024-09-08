@@ -1,16 +1,35 @@
 "use client";
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoLogInOutline } from "react-icons/io5";
 import {  HiOutlineMenuAlt3 } from "react-icons/hi";
 import { RxCross2 } from "react-icons/rx";
-const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+import { useDispatch, useSelector } from 'react-redux';
+import { currentuser} from "../../redux/feature/user/api"
+import { CgProfile } from "react-icons/cg";
+import { IoMdLogOut } from "react-icons/io";
 
+const Navbar = () => { 
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
+ const [isOpen, setIsOpen] = useState(false);
+ const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+ const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+ const closeDropdown = () => setIsDropdownOpen(false);
+
+ console.log("isee",user)
   const toggleMenu = () => {
         setIsOpen(!isOpen);
     }
 
+    const handleLogout=async()=>{
+      
+    }
+
+    useEffect(() => {
+      dispatch(currentuser()); // Fetch current user on component mount
+    }, [dispatch]);
+  
   return (
     <nav className='w-full z-50 p-4 shadow-sm shadow-slate-500 fixed  font-medium text-white bg-blue-850 '>
       <div className='container mx-auto flex justify-between items-center'>
@@ -35,13 +54,36 @@ const Navbar = () => {
           <Link href='' className='hover:text-green-750 flex items-center'>About</Link>
           <Link href='' className='hover:text-green-750 flex items-center'>Contact</Link>
         </div>
-
-        <Link href='/signup' className='hidden md:block'>
+        
+        <div className='hidden   md:block md:relative'
+          onMouseEnter={() => setIsDropdownOpen(true)}
+          // onMouseLeave={closeDropdown}
+          >
+        {user?<>
+         <Link href='/profile'  
+         
+           >
+         <div className='hidden items-center mr-16 hover:text-green-750 text-white rounded-full font-bold md:flex '>
+           <CgProfile size={35} />
+         </div>
+         </Link>
+         {isDropdownOpen && ( <div
+           className="absolute w-36 flex flex-row right-6 items-center gap-6  justify-center  top-full  mt-0 bg-white border rounded shadow-xl p-4 z-50 text-blue-850 hover:text-green-750"
+           onMouseEnter={() => setIsDropdownOpen(true)}
+           onMouseLeave={closeDropdown}
+           onclick={handleLogout}
+            >
+           <IoMdLogOut  size={25}/>
+             Logout
+          </div>)}
+         </>
+         : <Link href='/signup' className='hidden md:block'>
         <div className='mr-5 hidden  items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold md:flex py-1'>
           <IoLogInOutline size={25} />
           Signup
         </div>
-        </Link>
+        </Link>}
+        </div>
       </div>
     
       {/* Slide-in Mobile Menu */}
@@ -68,12 +110,21 @@ const Navbar = () => {
         <Link href='/write' className='hover:text-green-750'>Write</Link>
         <Link href='' className='hover:text-green-750'>About</Link>
         <Link href='' className='hover:text-green-750'>Contact</Link>
+        {user?
+         <Link href='/profile'>
+         <div className='mr-5 md:hidden gap-2 items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
+         <CgProfile size={25} />
+           Profile
+         </div>
+         </Link>
+        :
         <Link href='/signup'>
         <div className='mr-5 md:hidden  items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
           <IoLogInOutline size={25} />
           Signup
         </div>
-        </Link>
+        </Link>}
+       
       </div>
     </nav>
   )

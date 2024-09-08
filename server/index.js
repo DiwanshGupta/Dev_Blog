@@ -2,7 +2,7 @@ import express from 'express';
 import cors from "cors"
 import env from "dotenv"
 import { connectDB } from './utils/db_connect.js';
-import authRouter from './routes/auth_route.js';
+import authRouter from './routes/user/auth_route.js';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
