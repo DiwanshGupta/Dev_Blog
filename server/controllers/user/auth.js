@@ -1,6 +1,5 @@
 import { customAlphabet } from "nanoid";
 import {generatetoken, User} from "../../model/user.js";
-import ErrorHandler from "../../utils/errorhandler.js";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { sendEmail } from "../../utils/sendEmail.js";
