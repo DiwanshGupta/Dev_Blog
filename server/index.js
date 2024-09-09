@@ -6,6 +6,7 @@ import authRouter from './routes/user/auth_route.js';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { config } from './utils/config.js';
+import userRouter from './routes/user/user.js';
 
 
 env.config();
@@ -21,6 +22,7 @@ app.get("/api/", (req,res,next)=>{
 });
 
 app.use('/api/v1/auth',authRouter)
+app.use('/api/v1/user',userRouter)
 
 const port = 5000;
 const start = async () => {

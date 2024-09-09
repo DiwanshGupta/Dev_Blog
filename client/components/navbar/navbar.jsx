@@ -5,9 +5,10 @@ import { IoLogInOutline } from "react-icons/io5";
 import {  HiOutlineMenuAlt3 } from "react-icons/hi";
 import { RxCross2 } from "react-icons/rx";
 import { useDispatch, useSelector } from 'react-redux';
-import { currentuser} from "../../redux/feature/user/api"
+import { currentuser, userLogout} from "../../redux/feature/user/api"
 import { CgProfile } from "react-icons/cg";
 import { IoMdLogOut } from "react-icons/io";
+import instance from '../../utils/axios';
 
 const Navbar = () => { 
   const dispatch = useDispatch();
@@ -17,13 +18,12 @@ const Navbar = () => {
  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
  const closeDropdown = () => setIsDropdownOpen(false);
 
- console.log("isee",user)
   const toggleMenu = () => {
         setIsOpen(!isOpen);
     }
 
-    const handleLogout=async()=>{
-      
+    const handleLogout=()=>{
+      dispatch(userLogout())
     }
 
     useEffect(() => {
@@ -68,13 +68,22 @@ const Navbar = () => {
          </div>
          </Link>
          {isDropdownOpen && ( <div
-           className="absolute w-36 flex flex-row right-6 items-center gap-6  justify-center  top-full  mt-0 bg-white border rounded shadow-xl p-4 z-50 text-blue-850 hover:text-green-750"
+           className="absolute w-36 flex flex-col right-6 items-center gap-6  justify-center  top-full  mt-0 bg-white border rounded shadow-xl p-4 z-50 text-white "
            onMouseEnter={() => setIsDropdownOpen(true)}
            onMouseLeave={closeDropdown}
-           onclick={handleLogout}
             >
+          <div className='flex flex-row bg-green-400 rounded-md hover:bg-green-750 gap-3' 
+            onClick={handleLogout}>
            <IoMdLogOut  size={25}/>
              Logout
+             </div>
+            <Link href={'/profile'}>
+            <div className='flex flex-row bg-green-400 rounded-md  hover:bg-green-750 gap-3' 
+            >
+           <CgProfile size={35} />
+             View Profile
+             </div>
+             </Link>
           </div>)}
          </>
          : <Link href='/signup' className='hidden md:block'>

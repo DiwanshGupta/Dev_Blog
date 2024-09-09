@@ -1,6 +1,5 @@
 import { customAlphabet } from "nanoid";
 import {generatetoken, User} from "../../model/user.js";
-import ErrorHandler from "../../utils/errorhandler.js";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { sendEmail } from "../../utils/sendEmail.js";
@@ -159,11 +158,6 @@ export const getUser=async(req,res)=>{
   return res.status(200).json(user);  
 }
 export const logoutUser = (req, res) => {
-  req.session.destroy((err) => {
-      if (err) {
-          return res.status(500).json({ message: 'Failed to log out' });
-      }
-      res.clearCookie('ec_ls'); // Default cookie name for express-session
-      return res.status(200).json({ message: 'Logged out successfully' });
-  });
+  res.clearCookie('ec_ls'); // Clear the cookie
+  return res.status(200).json({ message: 'Logged out successfully' });
 };

@@ -42,7 +42,7 @@ const page = () => {
         <div className='md:p-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3  '>
         <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
             <div className='  w-full   rounded-md '>
-            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full h-48  rounded-md '/>
+            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full object-cover h-48  rounded-md '/>
             </div>
             <div className='flex font-semibold flex-col  justify-between'>
                 <div className='text-blue-850'>
@@ -65,7 +65,7 @@ const page = () => {
         </div>
         <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
             <div className='  w-full   rounded-md '>
-            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full h-48  rounded-md '/>
+            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full object-cover h-48  rounded-md '/>
             </div>
             <div className='flex font-semibold flex-col  justify-between'>
                 <div className='text-blue-850'>
@@ -88,7 +88,7 @@ const page = () => {
         </div>
         <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
             <div className='  w-full   rounded-md '>
-            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full h-48  rounded-md '/>
+            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full object-cover h-48  rounded-md '/>
             </div>
             <div className='flex font-semibold flex-col  justify-between'>
                 <div className='text-blue-850'>
