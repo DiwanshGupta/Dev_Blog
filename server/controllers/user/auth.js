@@ -117,7 +117,7 @@ export const verifyAccount=async(req,res)=>{
     }
   
       const sendToken=generatetoken(users);
-      return res.status(201).cookie("ec_ls",sendToken,authOptions).json({message:"user Signup successfully"})
+      return res.status(201).cookie("ec_ls",sendToken,authOptions).json({message:"user Signup successfully",user})
 } catch (error) {
   return res.status(400).json({ error: error.message });
   }
@@ -147,7 +147,7 @@ export const loginuser=async(req,res)=>{
         email:userExist.email
       }
       const sendToken= generatetoken(users);
-      return res.status(201).cookie("ec_ls",sendToken,authOptions).json({message:"user login successfully"})
+      return res.status(201).cookie("ec_ls",sendToken,authOptions).json({message:"user login successfully",user:userExist})
   } catch (error) {
     return res.status(400).json({ error: error.message });
 
@@ -157,6 +157,7 @@ export const getUser=async(req,res)=>{
   const {user}=req;
   return res.status(200).json(user);  
 }
+
 export const logoutUser = (req, res) => {
   res.clearCookie('ec_ls'); // Clear the cookie
   return res.status(200).json({ message: 'Logged out successfully' });

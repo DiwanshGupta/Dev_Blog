@@ -5,9 +5,12 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import Swal from 'sweetalert2';
 import instance from '../../utils/axios';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { getuser } from '../../redux/feature/user/slice';
 
 const page = () => {
     const router=useRouter()
+    const dispatch=useDispatch()
     const [loader,setloader]=useState(false)
     const [show, setShow] = useState(false);
     const [form, setForm] = useState({
@@ -43,7 +46,8 @@ const page = () => {
                     text: 'user login successfully',
                     icon: 'success',
                   })
-                  
+                  dispatch(getuser(response.data.user)); 
+
                 }
         } catch (error) {
             Swal.fire({

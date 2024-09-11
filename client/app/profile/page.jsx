@@ -1,11 +1,37 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {  useSelector } from 'react-redux'
 import UpdateProfile from "../../components/UpdateProfile/updateProfile"
+import { useRouter } from 'next/navigation'
 
 const page = () => {
     const user=useSelector((state)=>state.user?.user)
+    const [loading, setLoading] = useState(true); // Add loading state
+    const router = useRouter();
   
+    useEffect(() => {
+      // Simulate the delay in fetching user data
+      if (!user) {
+        setLoading(true); // Show loading while fetching user
+      } else {
+        setLoading(false); // Set loading to false once user data is available
+      }
+    }, [user]);
+  
+    useEffect(() => {
+      // If user is not available after loading, redirect to login
+      if (!loading && !user) {
+        router.push('/login');
+      }
+    }, [loading, user, router]);
+  
+    if (loading) {
+      return (
+        <div className='flex  items-center w-fit  h-screen py-8  justify-center m-auto'>
+          <div className="loader items-center justify-center"></div>
+        </div>
+      );
+    }
   return (
     <>
     <div className='w-full m-0 h-52'>

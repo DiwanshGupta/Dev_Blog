@@ -1,34 +1,46 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import instance from '../../utils/axios'
 import Swal from 'sweetalert2'
 import { getuser } from '../../redux/feature/user/slice'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const UpdateProfile = () =>
 {
     const dispatch=useDispatch()
     const [isModalVisible,setIsModalVisible]=useState( false );
     const [loader,setloader]=useState(false)
-
+    const user=useSelector((state)=>state.user?.user)
+    const [imagePreview, setImagePreview] = useState(null);
     const [form, setForm] = useState({
         name: "",
-        bio: "",
+        bio:  "",
     });
     const [selectedImage, setSelectedImage] = useState(null) 
     const [uploading, setUploading] = useState(false); 
+
 
     const handleImageChange = (e) => {
        const file = e.target.files[0];
        if (file) {
            setSelectedImage(file);  
+           const reader = new FileReader();
+           reader.onloadend = () => {
+             setImagePreview(reader.result);  
+           };
+           reader.readAsDataURL(file);  
+        
        }
    };
 
    const handleImageUpload = async () => {
        if (!selectedImage) {
-           alert("Please select an image first.");
+          Swal.fire({
+            title: 'Error',
+            text: 'Please select an image.',
+            icon: 'warning',
+          })
            return;
        }
 
@@ -51,6 +63,7 @@ const UpdateProfile = () =>
                    icon: 'success',
                  })
                  dispatch(getuser(response.data.user)); 
+                 setIsModalVisible( !isModalVisible );
 
            }
        } catch (error) {
@@ -73,14 +86,75 @@ const UpdateProfile = () =>
 
   const handlesubmit=async(e)=>{
     e.preventDefault()
-    setloader(false)
+    if (!form.name) {
+          Swal.fire({
+            title: 'Fill the form',
+            text:  'Name is missing',
+            icon: 'warning',
+          })  
+      }
+    if (!form.bio) {
+          Swal.fire({
+            title: 'Fill the form',
+            text:  'Bio is missing',
+            icon: 'warning',
+          }) 
+      }
     console.log("form",form)    
+    try {
+      const response = await instance.post('/user/update/userdata', form, {
+          headers: {
+            "Content-Type": "application/json"
+          },
+      });
+      if(response.status===200){
+        Swal.fire({
+          title: 'update',
+          text: 'User Data updated succesfully',
+          icon: 'success',
+        })
+        dispatch(getuser(response.data.user)); 
+        setIsModalVisible( !isModalVisible );
+      }
+  } catch (error) {
+      console.error("Error uploading image:", error);
+      Swal.fire({
+          title: 'Some error occured',
+          text:   error.response?.data?.message || 'try again after Sometime',
+          icon: 'warning',
+        })  
+  }
   }
 
+  useEffect(() => {
+    // Function to handle the keydown event
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsModalVisible((prevIsModalVisible) => !prevIsModalVisible); // Safely toggle modal
+      }
+    };
+  
+    // Populate the form with user data if available
+    if (user && user.name !== form.name && user.bio !== form.bio) { // Prevent unnecessary form updates
+      setForm({
+        name: user.name || "", // Default to empty string if user.name is not available
+        bio: user.bio || ""    // Default to empty string if user.bio is not available
+      });
+    }
+  
+    // Add event listener for keydown
+    window.addEventListener("keydown", handleKeyDown);
+  
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [user]); // Only include form data in dependencies
+  
   return (
     <div >
       <div className="flex justify-start items-center cursor-pointer ">
-        <button onClick={ toggleModal } variant="solid"  className="text-white  bg-green-750 font-medium p-2 capitalize text-sm rounded-lg" >
+        <button onClick={ toggleModal } variant="solid"  className="text-white font-semibold hover:bg-green-750 mb-5  bg-green-750/30  p-2 capitalize text-sm rounded-lg" >
           Update profile
         </button>
       </div>
@@ -103,31 +177,43 @@ const UpdateProfile = () =>
                 <h3 className="text-xl font-semibold text-white mb-4">Edit Profile</h3>
                 <form onSubmit={handlesubmit}  className="space-y-4">
                   <div className="flex flex-col items-center mb-4">
-                    <div
-                      className="bg-gray-200 border-2 outline-none h-28 w-28 rounded-full flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300   relative group mb-2"
-                       
-                    >
-                      
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 } d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <input type="file" accept="image/*" onChange={handleImageChange} className="my-3" />
-                        <button onClick={handleImageUpload} className={`btn ${uploading ? 'btn-disabled' : ''}`}  disabled={uploading} >
-                            {uploading ? 'Uploading...' : 'Upload Image'}
-                        </button>
-                    </div>
-                    <label htmlFor="image" className="text-sm font-medium text-gray-300 cursor-pointer">
-                      Change Profile Picture
+                    <label htmlFor="image" className="cursor-pointer">
+                    {imagePreview ? (
+                        <img
+                            src={imagePreview}
+                            alt="profile preview"
+                            className="w-16 my-1 object-cover select-none h-16 justify-center m-auto rounded-full"
+                        />
+                        ) : user?.profile ? (
+                        <img
+                            src={user.profile}
+                            alt="profile"
+                            className="w-16 my-1 object-cover select-none h-16 justify-center m-auto rounded-full"
+                        />
+                        ) : (
+                        <div className="bg-gray-200 border-2 outline-none h-28 w-28 rounded-full flex items-center justify-center cursor-pointer overflow-hidden transition-all duration-300 relative group mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        )}
                     </label>
                     <input
                       type="file"
                       id="image"
                       name="image"
                       className="hidden"
+                      onChange={handleImageChange}
                       accept="image/*"
+                      value={selectedImage}
                     />
+                    <div>
+                      <button onClick={handleImageUpload} className={`bg-white text-xs text-green-750 px-2 py-[6px] mt-2 rounded-md  ${!selectedImage ? 'cursor-not-allowed bg-opacity-50 text-gray-600 pointer-events-none' : ' cursor-pointer'}`}  disabled={uploading} >
+                            {uploading ? 'Uploading...' : 'Upload Image'}
+                        </button>
+                    </div>
                   </div>
-
+                      
                   <div>
                     <label htmlFor="nickname" className="block text-sm font-medium text-gray-300 mb-1">
                       Name

@@ -7,8 +7,7 @@ import { RxCross2 } from "react-icons/rx";
 import { useDispatch, useSelector } from 'react-redux';
 import { currentuser, userLogout} from "../../redux/feature/user/api"
 import { CgProfile } from "react-icons/cg";
-import { IoMdLogOut } from "react-icons/io";
-import instance from '../../utils/axios';
+import { FaPowerOff } from "react-icons/fa6";
 
 const Navbar = () => { 
   const dispatch = useDispatch();
@@ -61,29 +60,35 @@ const Navbar = () => {
           >
         {user?<>
          <Link href='/profile'  
-         
            >
          <div className='hidden items-center mr-16 hover:text-green-750 text-white rounded-full font-bold md:flex '>
-           <CgProfile size={35} />
+         {user?.profile ? (
+                <img
+                  src={user.profile} 
+                  alt="User profile"
+                  className="w-10  object-cover select-none h-10 justify-center m-auto rounded-full"
+                />
+              ) : (
+                <CgProfile size={35} />
+              )}
          </div>
          </Link>
          {isDropdownOpen && ( <div
-           className="absolute w-36 flex flex-col right-6 items-center gap-6  justify-center  top-full  mt-0 bg-white border rounded shadow-xl p-4 z-50 text-white "
+           className="absolute w-36 flex flex-col right-6 items-center gap-2  top-full  mt-0 bg-white border rounded shadow-xl p-3 z-50 text-white "
            onMouseEnter={() => setIsDropdownOpen(true)}
            onMouseLeave={closeDropdown}
             >
-          <div className='flex flex-row bg-green-400 rounded-md hover:bg-green-750 gap-3' 
-            onClick={handleLogout}>
-           <IoMdLogOut  size={25}/>
-             Logout
-             </div>
-            <Link href={'/profile'}>
-            <div className='flex flex-row bg-green-400 rounded-md  hover:bg-green-750 gap-3' 
+            <Link href={'/profile'} className=''>
+            <div className='flex flex-row px-2 py-2 bg-green-600/45 p-1 text-sm text-nowrap rounded-md  hover:bg-green-750' 
             >
-           <CgProfile size={35} />
              View Profile
              </div>
              </Link>
+             <div className='flex px-3 py-2 flex-row bg-green-600/45  items-center text-center p-1 text-sm text-nowrap cursor-pointer rounded-md hover:bg-green-750 gap-2' 
+            onClick={handleLogout}>
+            <FaPowerOff size={20} />
+             Logout
+             </div>
           </div>)}
          </>
          : <Link href='/signup' className='hidden md:block'>
@@ -115,12 +120,12 @@ const Navbar = () => {
             <RxCross2 size={25} />
         </span>
         </div>
-        <Link href='/blog' className='hover:text-green-750'>Blogs</Link>
-        <Link href='/write' className='hover:text-green-750'>Write</Link>
-        <Link href='' className='hover:text-green-750'>About</Link>
-        <Link href='' className='hover:text-green-750'>Contact</Link>
+        <Link href='/blog' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu}>Blogs</Link>
+        <Link href='/write' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >Write</Link>
+        <Link href='' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >About</Link>
+        <Link href='' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >Contact</Link>
         {user?
-         <Link href='/profile'>
+         <Link href='/profile'  onClick={toggleMenu}>
          <div className='mr-5 md:hidden gap-2 items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
          <CgProfile size={25} />
            Profile
@@ -133,7 +138,10 @@ const Navbar = () => {
           Signup
         </div>
         </Link>}
-       
+        <div className='mr-5 md:hidden gap-2 items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'  onClick={handleLogout}>
+            <FaPowerOff size={20} />
+             Logout
+             </div>
       </div>
     </nav>
   )

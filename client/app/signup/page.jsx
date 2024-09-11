@@ -3,9 +3,12 @@ import instance from "../../utils/axios"
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useDispatch } from "react-redux";
 import Swal from 'sweetalert2'
+import { getuser } from "../../redux/feature/user/slice";
 
 const page = () => {
+    const dispatch=useDispatch()
     const [show, setShow] = useState(false);
     const [loader,setloader]=useState(false)
     const [form, setForm] = useState({
@@ -28,9 +31,10 @@ const page = () => {
                     headers: {
                       "Content-Type": "application/json"
                     },
-                  }
+                  } 
             )
             if(response.status===201){
+                dispatch(getuser(response.data.user)); 
                 setloader(false)
                 setForm({ 
                     name:"",

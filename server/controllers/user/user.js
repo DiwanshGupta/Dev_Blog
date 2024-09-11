@@ -1,7 +1,6 @@
 import { uploadonCloudinary } from "../../utils/cloudinary.js";
 
 export const userProfile=async(req,res)=>{
-    console.log("request",req)
     try {
         if (!req.file) {
             return res.status(400).send('No file uploaded.');
@@ -28,3 +27,33 @@ export const userProfile=async(req,res)=>{
         res.status(500).send('Error occurred while uploading file.');
     }
 }
+
+export const userBio=async(req,res)=>{
+    try {
+        const {name,bio}=req.body;
+        const {user}=req;
+        console.log("data",name,bio)
+        console.log("user",user)
+
+        if (!name) {
+            return res.status(400).json({ message: "Name is required to update the profile" });
+          }
+          if (!bio) {
+            return res.status(400).json({ message: "Bio is required to update the profile" });
+          }
+        user.name=name;
+        user.bio=bio;
+
+        await user.save();
+
+        res.status(200).json({
+            message: 'Profile updated successfully',
+            user
+        });
+    } catch (error) {
+
+        return res.status(400).json({ error: error.message });
+   
+    }
+}
+
