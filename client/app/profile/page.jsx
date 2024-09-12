@@ -5,22 +5,13 @@ import UpdateProfile from "../../components/UpdateProfile/updateProfile"
 import { useRouter } from 'next/navigation'
 
 const page = () => {
-    const user=useSelector((state)=>state.user?.user)
-    const [loading, setLoading] = useState(true); // Add loading state
+  const user=useSelector((state)=>state.user?.user)
+  const loading=useSelector((state)=>state.user?.loading)
     const router = useRouter();
-  
     useEffect(() => {
-      // Simulate the delay in fetching user data
-      if (!user) {
-        setLoading(true); // Show loading while fetching user
-      } else {
-        setLoading(false); // Set loading to false once user data is available
-      }
-    }, [user]);
-  
-    useEffect(() => {
-      // If user is not available after loading, redirect to login
-      if (!loading && !user) {
+      console.log("g",loading)
+      if (!user ) {
+        console.log("loadig",loading)
         router.push('/login');
       }
     }, [loading, user, router]);
@@ -54,74 +45,28 @@ const page = () => {
             <h2 className='font-bold text-2xl '>Author blogs</h2>
         </div>
         <div className='grid grid-rows-1 grid-cols-1 sm:grid-cols-2 gap-8  py-8'>
-        <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col lg:flex-row  gap-5  '>
-            <div className='  w-full h-fit sm:w-56 justify-center m-auto  sm:h-full  rounded-md '>
-            <img src='/assets/visax-5jgvVlkI0mw-unsplash.jpg' className=' w-full  rounded-md '/>
-            </div>
-            <div className='flex gap-3 font-semibold flex-col  justify-between'>
-                <div className='text-gray-400'>
-                    NHL
-                </div>
-                <div className='text-sm sm:text-base md:text-xs lg:text-lg w-full'>
-                Stanley Cup from Playoffs format, qualification system 
-                Stanley Cup
-                </div>
-                <div className='text-xs sm:text-base justify-between flex flex-row text-black' >
-                By Diwansh Gupta<span className='text-gray-400'> - Mar-1,2024</span>
-                </div>
-            </div>
-        </div>
-        <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col lg:flex-row  gap-5  '>
-            <div className='  w-full h-fit sm:w-56 justify-center m-auto  sm:h-full  rounded-md '>
-            <img src='/assets/visax-5jgvVlkI0mw-unsplash.jpg' className=' w-full  rounded-md '/>
-            </div>
-            <div className='flex gap-3 font-semibold flex-col  justify-between'>
-                <div className='text-gray-400'>
-                    NHL
-                </div>
-                <div className='text-sm sm:text-base md:text-xs lg:text-lg w-full'>
-                Stanley Cup from Playoffs format, qualification system 
-                Stanley Cup
-                </div>
-                <div className='text-xs sm:text-base justify-between flex flex-row text-black' >
-                By Diwansh Gupta<span className='text-gray-400'> - Mar-1,2024</span>
-                </div>
-            </div>
-        </div>
-        <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col lg:flex-row  gap-5  '>
-            <div className='  w-full h-fit sm:w-56 justify-center m-auto  sm:h-full  rounded-md '>
-            <img src='/assets/visax-5jgvVlkI0mw-unsplash.jpg' className=' w-full  rounded-md '/>
-            </div>
-            <div className='flex gap-3 font-semibold flex-col  justify-between'>
-                <div className='text-gray-400'>
-                    NHL
-                </div>
-                <div className='text-sm sm:text-base md:text-xs lg:text-lg w-full'>
-                Stanley Cup from Playoffs format, qualification system 
-                Stanley Cup
-                </div>
-                <div className='text-xs sm:text-base justify-between flex flex-row text-black' >
-                By Diwansh Gupta<span className='text-gray-400'> - Mar-1,2024</span>
-                </div>
-            </div>
-        </div>
-        <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col lg:flex-row  gap-5  '>
-            <div className='  w-full h-fit sm:w-56 justify-center m-auto  sm:h-full  rounded-md '>
-            <img src='/assets/visax-5jgvVlkI0mw-unsplash.jpg' className=' w-full  rounded-md '/>
-            </div>
-            <div className='flex gap-3 font-semibold flex-col  justify-between'>
-                <div className='text-gray-400'>
-                    NHL
-                </div>
-                <div className='text-sm sm:text-base md:text-xs lg:text-lg w-full'>
-                Stanley Cup from Playoffs format, qualification system 
-                Stanley Cup
-                </div>
-                <div className='text-xs sm:text-base justify-between flex flex-row text-black' >
-                By Diwansh Gupta<span className='text-gray-400'> - Mar-1,2024</span>
-                </div>
-            </div>
-        </div>
+        {user?.blogs.map((item, index) => (
+  <div key={index} className='flex p-3 justify-center m-auto hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750 flex-col lg:flex-row gap-5'>
+    <div className='w-full h-fit sm:w-56 justify-center m-auto sm:h-full rounded-md'>
+      <img src={item.blogImage || '/assets/visax-5jgvVlkI0mw-unsplash.jpg'} alt={item.title} className='w-full rounded-md' />
+    </div>
+    <div className='flex gap-3 font-semibold flex-col justify-between'>
+      <div className='text-gray-400'>
+        {item.title}
+      </div>
+      <div className='text-sm sm:text-base md:text-xs lg:text-lg w-full'>
+        {/* Render truncated content or process HTML content */}
+        <div dangerouslySetInnerHTML={{ __html: item.content.slice(0, 100) }} />
+      </div>
+      <div className='text-xs sm:text-base justify-between flex flex-row text-black'>
+        By {user.name} <span className='text-gray-400'> - {new Date(item.createdAt).toLocaleDateString()}</span>
+      </div>
+    </div>
+  </div>
+))}
+
+       
+        
         </div>
     </div>
     </>

@@ -50,6 +50,7 @@ const page = () => {
 
                 }
         } catch (error) {
+            setloader(false)
             Swal.fire({
                 title: 'Some error occured',
                 text:   error.response?.data?.message || 'try again after Sometime',

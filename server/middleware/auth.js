@@ -14,7 +14,11 @@ export const isAuthenticate=async(req,res,next)=>{
     if(!userExist){
         return res.status(404).json({message:"User Not Found"})
     }
-    req.user=userExist;
+    const userWithBlogs = await User.findById(userExist._id)
+    .populate({  path: 'blogs',        
+       model: 'Blog',});
+      
+    req.user=userWithBlogs;
     
     next()
 

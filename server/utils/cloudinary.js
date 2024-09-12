@@ -9,16 +9,15 @@ cloudinary.config({
     api_secret: config.cloudsecret  
 });
 
-export const uploadonCloudinary=async(localFilepath)=>{
+export const uploadonCloudinary=async(localFilepath,folder)=>{
     try {
         if(!localFilepath) return null
 
       const response=  await cloudinary.uploader.upload(localFilepath, {
                 resource_type:'image',
-                folder:'profile'
+                folder
             }
         )
-        console.log("file uploaded",response);
         await fs.unlink(localFilepath);
         return response
     } catch (error) {

@@ -7,8 +7,8 @@ export const userProfile=async(req,res)=>{
         }
         const {user}=req
         const localFilepath = req.file.path;
-
-        const cloudinaryResponse = await uploadonCloudinary(localFilepath);
+        const folder='profile'
+        const cloudinaryResponse = await uploadonCloudinary(localFilepath,folder);
 
         if (cloudinaryResponse) {   
 

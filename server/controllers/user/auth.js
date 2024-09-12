@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { sendEmail } from "../../utils/sendEmail.js";
 import { config } from "../../utils/config.js";
+import Blog from "../../model/blog.js";
 
 
 const verificationOptions = {
@@ -147,7 +148,11 @@ export const loginuser=async(req,res)=>{
         email:userExist.email
       }
       const sendToken= generatetoken(users);
-      return res.status(201).cookie("ec_ls",sendToken,authOptions).json({message:"user login successfully",user:userExist})
+      const userWithBlogs = await User.findById(userExist._id)
+      .populate({  path: 'blogs',        
+      model: 'Blog',});
+      const user=userWithBlogs;
+      return res.status(201).cookie("ec_ls",sendToken,authOptions).json({message:"user login successfully",user})
   } catch (error) {
     return res.status(400).json({ error: error.message });
 
@@ -155,7 +160,9 @@ export const loginuser=async(req,res)=>{
 }
 export const getUser=async(req,res)=>{
   const {user}=req;
-  return res.status(200).json(user);  
+
+
+   return res.status(200).json(user);  
 }
 
 export const logoutUser = (req, res) => {

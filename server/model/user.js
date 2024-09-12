@@ -26,14 +26,16 @@ const userSchema=new mongoose.Schema({
         type: String,
         required: true,
       },
-
+      blogs: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Blog', 
+       }],
 },{timestamps:true});
 
 const User = new mongoose.model( "User", userSchema );
 
 const generatetoken = (user) => {
-  // Define the payload with user information
-  console.log("user",user)
+   console.log("user",user)
   const payload = {
     uuid: user.uuid,
     name: user.name,

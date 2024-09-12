@@ -1,18 +1,24 @@
 "use client";
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
+import Swal from 'sweetalert2';
+import instance from '../../utils/axios';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const page = () => {
+    const router = useRouter();
+    const user=useSelector((state)=>state.user?.user)
     const [form, setForm] = useState({
         title: '',
         tags: [],
         content: ''
     });
-    const [selectedImage, setSelectedImage] = useState(null) 
-
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -28,15 +34,13 @@ const page = () => {
         }));
     };
 
-    const handleFileChange = (e) => {
-           const file = e.target.files[0];
-     
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
         if (file) {
-            // Handle the file, e.g., upload it or preview it
-            console.log('Selected file:', file);
-            setSelectedImage(file)
-          }
-    };
+          setSelectedImage(file);   
+    
+        }
+      };
  
 
     const handleContentChange = (value) => {
@@ -45,11 +49,78 @@ const page = () => {
             content: value
         }));
     };
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        console.log(form);
-        console.log(selectedImage);
+                if (!form.title || !form.content) {
+                    Swal.fire({
+                        title: 'Form Incomplete',
+                        text: 'Please fill out all form fields.',
+                        icon: 'warning',
+                    });
+                    return;
+                }
+            
+                if (!selectedImage) {
+                    Swal.fire({
+                        title: 'Image Missing',
+                        text: 'Please upload the image.',
+                        icon: 'warning',
+                    });
+                    return;
+                }
+            const formData = new FormData();
+            formData.append("blogImg", selectedImage); 
+            formData.append("data", JSON.stringify(form));  
+            setLoading(true);
+            try {
+                const response=await instance.post("/user/update/blog",formData,{
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                console.log(response.data)
+                if(response.status===200){
+                    setLoading(false);
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Blog Published successfully!',
+                        icon: 'success',
+                    });
+                }
+
+
+            } catch (error) {
+                setLoading(false);
+                console.error("Error uploading image:", error);
+                Swal.fire({
+                    title: 'Some error occured',
+                    text:   error.response?.data?.message || 'try again after Sometime',
+                    icon: 'warning',
+                  })  
+            }
+       
     };
+    useEffect(() => {
+        if (!user) {
+          setLoading(true); 
+        } else {
+          setLoading(false);
+        }
+      }, [user]);
+    
+    useEffect(() => {
+        if (!loading && !user) {
+          router.push('/login');
+        }
+      }, [loading, user, router]);
+    
+    if (loading) {
+        return (
+          <div className='flex  items-center w-fit  h-screen py-8  justify-center m-auto'>
+            <div className="loader items-center justify-center"></div>
+          </div>
+        );
+      }
   return (
     <div className='p-10 pt-16 md:p-24'>
         <div>
@@ -57,7 +128,7 @@ const page = () => {
                 Write your blog 
             </h2>
         </div>
-         <form className="space-y-6"  onClick={handleSubmit}  >
+         <div className="space-y-6"   >
             <div className="space-y-4">
                 <div>
                     <h2 className='py-2 font-semibold'>Enter title</h2>
@@ -78,14 +149,13 @@ const page = () => {
                 <label htmlFor="image" className="cursor-pointer">
                 <h2 className='py-2 font-semibold'>Upload blog image</h2>
                 </label>
-                    <input
-                        type='file'
-                        // value={selectedImage}
+                <input
+                        type="file"
                         id="image"
                         name="image"
-                        accept="image/*"      
-                        onChange={handleFileChange}
-                        className={`  w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm outline-none placeholder-gray-400 sm:text-sm  `}
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className={`w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm outline-none placeholder-gray-400 sm:text-sm`}
                         placeholder="your file"
                     />
                 </div>
@@ -105,10 +175,10 @@ const page = () => {
                 <ReactQuill className='rounded-lg  h-36' theme="snow" placeholder='Write Your content here...' value={form.content}  onChange={handleContentChange} />
                 </div>
                 <div className=' pt-20  flex justify-center m-auto '>
-                <span className='rounded-full bg-green-750 p-3 text-xl px-8 font-semibold text-white'>Publish your Blog</span>
+                <button onClick={handleSubmit}  className='rounded-full bg-green-750 p-2 text-base px-8 font-semibold text-white'>Publish your Blog</button>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
   )
 }

@@ -127,34 +127,32 @@ const UpdateProfile = () =>
   }
 
   useEffect(() => {
-    // Function to handle the keydown event
-    const handleKeyDown = (event) => {
+
+     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
-        setIsModalVisible((prevIsModalVisible) => !prevIsModalVisible); // Safely toggle modal
-      }
+        setIsModalVisible(false); 
+       }
     };
   
-    // Populate the form with user data if available
-    if (user && user.name !== form.name && user.bio !== form.bio) { // Prevent unnecessary form updates
+    
+    if (user && user.name !== form.name && user.bio !== form.bio) { 
       setForm({
-        name: user.name || "", // Default to empty string if user.name is not available
-        bio: user.bio || ""    // Default to empty string if user.bio is not available
+        name: user.name || "", 
+        bio: user.bio || ""    
       });
     }
   
-    // Add event listener for keydown
     window.addEventListener("keydown", handleKeyDown);
   
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [user]); // Only include form data in dependencies
+  }, [user]);
   
   return (
     <div >
       <div className="flex justify-start items-center cursor-pointer ">
-        <button onClick={ toggleModal } variant="solid"  className="text-white font-semibold hover:bg-green-750 mb-5  bg-green-750/30  p-2 capitalize text-sm rounded-lg" >
+        <button onClick={ toggleModal } variant="solid"  className="text-white outline-none z-20 font-semibold hover:bg-green-750 mb-5  bg-green-750/30  p-2 capitalize text-sm rounded-lg" >
           Update profile
         </button>
       </div>
@@ -205,7 +203,6 @@ const UpdateProfile = () =>
                       className="hidden"
                       onChange={handleImageChange}
                       accept="image/*"
-                      value={selectedImage}
                     />
                     <div>
                       <button onClick={handleImageUpload} className={`bg-white text-xs text-green-750 px-2 py-[6px] mt-2 rounded-md  ${!selectedImage ? 'cursor-not-allowed bg-opacity-50 text-gray-600 pointer-events-none' : ' cursor-pointer'}`}  disabled={uploading} >
