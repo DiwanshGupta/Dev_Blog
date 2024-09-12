@@ -3,18 +3,19 @@ import React, { useEffect, useState } from 'react'
 import {  useSelector } from 'react-redux'
 import UpdateProfile from "../../components/UpdateProfile/updateProfile"
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const page = () => {
   const user=useSelector((state)=>state.user?.user)
   const loading=useSelector((state)=>state.user?.loading)
     const router = useRouter();
-    useEffect(() => {
-      console.log("g",loading)
-      if (!user ) {
-        console.log("loadig",loading)
-        router.push('/login');
-      }
-    }, [loading, user, router]);
+    // useEffect(() => {
+    //   console.log("g",loading)
+    //   if (!user ) {
+    //     console.log("loadig",loading)
+    //     router.push('/login');
+    //   }
+    // }, [loading, user, router]);
   
     if (loading) {
       return (
@@ -46,24 +47,25 @@ const page = () => {
         </div>
         <div className='grid grid-rows-1 grid-cols-1 sm:grid-cols-2 gap-8  py-8'>
         {user?.blogs.map((item, index) => (
-  <div key={index} className='flex p-3 justify-center m-auto hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750 flex-col lg:flex-row gap-5'>
-    <div className='w-full h-fit sm:w-56 justify-center m-auto sm:h-full rounded-md'>
-      <img src={item.blogImage || '/assets/visax-5jgvVlkI0mw-unsplash.jpg'} alt={item.title} className='w-full rounded-md' />
-    </div>
-    <div className='flex gap-3 font-semibold flex-col justify-between'>
-      <div className='text-gray-400'>
-        {item.title}
-      </div>
-      <div className='text-sm sm:text-base md:text-xs lg:text-lg w-full'>
-        {/* Render truncated content or process HTML content */}
-        <div dangerouslySetInnerHTML={{ __html: item.content.slice(0, 100) }} />
-      </div>
-      <div className='text-xs sm:text-base justify-between flex flex-row text-black'>
-        By {user.name} <span className='text-gray-400'> - {new Date(item.createdAt).toLocaleDateString()}</span>
-      </div>
-    </div>
-  </div>
-))}
+          <Link key={index} href={`/blog/${item.blogId}`}>
+          <div   className='flex p-3 justify-center m-auto hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750 flex-col lg:flex-row gap-5'>
+            <div className='w-full h-48 sm:h-32 m-auto justify-center sm:w-56   rounded-md'>
+              <img src={item.blogImage || '/assets/visax-5jgvVlkI0mw-unsplash.jpg'} alt={item.title} className='w-full h-full  object-cover m-auto justify-center rounded-md' />
+            </div>
+            <div className='flex  font-semibold flex-col justify-between gap-3'>
+              <div className='text-gray-400'>
+                {item.title.slice(0,20)}
+              </div>
+              <div className='text-sm sm:text-base md:text-sm w-full'>
+                <div dangerouslySetInnerHTML={{ __html: item.content.slice(0, 100) }} />
+              </div>
+              <div className='text-xs sm:text-sm justify-between flex flex-row text-black'>
+                By {user.name} <span className='text-gray-400'> - {new Date(item.createdAt).toLocaleDateString()}</span>
+              </div>
+            </div>
+          </div>
+          </Link>
+        ))}
 
        
         

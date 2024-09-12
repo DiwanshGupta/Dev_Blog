@@ -1,5 +1,9 @@
+"use client"
+import { useParams } from 'next/navigation'
 import React from 'react'
 const page = () => {
+    const params=useParams()
+    const { id } = params
   return (
         <div className='  p-5    md:pt-24'>
         <div className='font-extrabold max-w-md text-3xl items-center m-auto   text-blue-850 text-center'>

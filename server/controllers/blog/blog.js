@@ -1,6 +1,10 @@
+import { customAlphabet } from "nanoid";
 import Blog from "../../model/blog.js";
 import { User } from "../../model/user.js";
 import { uploadonCloudinary } from "../../utils/cloudinary.js";
+
+const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZ#$@!#$%^)&>"*^:';  
+const generateUserId = customAlphabet(alphabet, 8);
 
 export const createBlog = async (req, res) => {
     try {
@@ -19,8 +23,9 @@ export const createBlog = async (req, res) => {
         const cloudinaryResponse = await uploadonCloudinary(localFilepath,folder);
         console.log("user uid",user.uuid)
         if (cloudinaryResponse) {   
-
+            const blogId =generateUserId()
             const blog=await Blog.create({
+                blogId,
                 title,
                 tags,
                 blogImage:cloudinaryResponse.secure_url,
@@ -46,11 +51,22 @@ export const createBlog = async (req, res) => {
     }
   };
 
-export const getBlogbyAuthor=async(req,res)=>{
+// export const getBlogbyAuthor=async(req,res)=>{
+//     try {
+//         const {user}=req
+//         const userBlogs = await Blog.find({ author: user._id }).populate('author', 'name email profile');
+//         // console.log(userBlogs)
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: 'Server Error' });
+//     }
+// }
+export const getsingleBlog=async(req,res)=>{
     try {
-        const {user}=req
-        const userBlogs = await Blog.find({ author: user._id }).populate('author', 'name email profile');
-        // console.log(userBlogs)
+        const {id}=req.query;
+        const blog=await Blog.find({blogId:id})
+        console.log("blogs",blog)
+        return res.status(200).send(blog)
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Server Error' });

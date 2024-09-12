@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const blogSchema = new mongoose.Schema({
+    blogId:{
+        type: String,
+        required: true,  
+        unique: true,
+    },
     title: {
         type: String,
         required: true  

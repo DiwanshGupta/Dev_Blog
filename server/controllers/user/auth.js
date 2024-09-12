@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { sendEmail } from "../../utils/sendEmail.js";
 import { config } from "../../utils/config.js";
-import Blog from "../../model/blog.js";
+// import Blog from "../../model/blog.js";
 
 
 const verificationOptions = {
