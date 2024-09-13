@@ -17,14 +17,14 @@ app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
-app.get("/api/", (req,res,next)=>{
+app.get("/api/endPoint2", (req,res,next)=>{
     res.send("Hello from server..")
 });
 
 app.use('/api/v1/auth',authRouter)
 app.use('/api/v1/user',userRouter)
 
-const port = 5000;
+const port = config.port ||8000;
 const start = async () => {
   try {
     connectDB()

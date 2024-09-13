@@ -2,6 +2,7 @@ import { customAlphabet } from "nanoid";
 import Blog from "../../model/blog.js";
 import { User } from "../../model/user.js";
 import { uploadonCloudinary } from "../../utils/cloudinary.js";
+import Comment from "../../model/comments.js";
 
 const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZ#$@!#$%^)&>"*^:';  
 const generateUserId = customAlphabet(alphabet, 8);
@@ -51,24 +52,82 @@ export const createBlog = async (req, res) => {
     }
   };
 
-// export const getBlogbyAuthor=async(req,res)=>{
-//     try {
-//         const {user}=req
-//         const userBlogs = await Blog.find({ author: user._id }).populate('author', 'name email profile');
-//         // console.log(userBlogs)
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Server Error' });
-//     }
-// }
+
 export const getsingleBlog=async(req,res)=>{
-    try {
-        const {id}=req.query;
-        const blog=await Blog.find({blogId:id})
-        console.log("blogs",blog)
-        return res.status(200).send(blog)
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server Error' });
+      const {id}=req.params;
+
+      console.log("id",id)
+      try {
+        const blog = await Blog.findOne({ blogId: id }).populate('author'); 
+          if (!blog) {
+            return res.status(404).json({ message: 'Blog not found' });
+          }
+          
+          const updatedBlog = await Blog.findById(blog._id)
+          .populate({
+            path: 'comments',  
+            populate: {
+              path: 'userId',
+              select: '_id name profile',  
+            }
+          })
+          .populate('author', 'name profile');  
+          res.status(200).json(updatedBlog);
+      } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Server Error' });
+      }
+}
+export const getallBlog=async(req,res)=>{
+  try {
+    const blog=await Blog.find().populate('author')
+    return res.status(200).json(blog)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+}
+
+export const commentOnBlog=async(req,res)=>{
+  const {id}=req.params;
+  const {user}=req;
+  const {comment}=req.body;
+  console.log("comment",comment,id)
+  try {
+    if(!comment){
+      return res.status(400).json({message:"Please Write Comment"})
     }
+    const blog = await Blog.findOne({ blogId: id });
+      if(!blog){
+      return res.status(400).json({message:"Do not try to mess dude"})
+    }
+    console.log("blps",blog)
+    const newComment = await Comment.create({
+      blogId: blog._id,
+      userId: user._id,
+       comment, 
+    });
+    
+
+      await Blog.findByIdAndUpdate(
+        blog._id,
+        { $push: { comments: newComment._id } },
+        { new: true } 
+    );
+
+    const updatedBlog = await Blog.findById(blog._id)
+      .populate({
+        path: 'comments',  
+        populate: {
+          path: 'userId',
+          select: '_id name profile',  
+        }
+      })
+      .populate('author', 'name profile');  
+
+    return res.status(201).json(updatedBlog)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server Error' });
+  }
 }

@@ -8,7 +8,6 @@ export const currentuser=()=>async(dispatch)=>{
         const response=await instance('/auth/getUser')
         if(response.status===200){
             dispatch(getuser(response.data)); 
-            console.log("respo",response.data)
     }
     } catch (error) {
         console.log("error",error.message)

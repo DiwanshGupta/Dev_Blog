@@ -4,18 +4,19 @@ import {  useSelector } from 'react-redux'
 import UpdateProfile from "../../components/UpdateProfile/updateProfile"
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { SiPeakdesign } from "react-icons/si";
 
 const page = () => {
   const user=useSelector((state)=>state.user?.user)
   const loading=useSelector((state)=>state.user?.loading)
     const router = useRouter();
-    // useEffect(() => {
-    //   console.log("g",loading)
-    //   if (!user ) {
-    //     console.log("loadig",loading)
-    //     router.push('/login');
-    //   }
-    // }, [loading, user, router]);
+    useEffect(() => {
+      console.log("g",loading)
+      if (!user ) {
+        console.log("loadig",loading)
+        router.push('/login');
+      }
+    }, [loading, user, router]);
   
     if (loading) {
       return (
@@ -31,11 +32,10 @@ const page = () => {
     </div>
     <div className='md:p-12 p-3 w-4/5 justify-center m-auto relative'>
         <div className='left-[4%] right-[4%]   -top-16   rounded-lg absolute   text-center p-3 items-center bg-white'>
-        <img src={user?.profile ? user.profile : '/assets/blank-profile-picture-973460_640.webp'} 
-            alt='profile' 
-            className='w-16 my-1 object-cover select-none h-16 justify-center m-auto rounded-full' 
-        />
-
+          <img src={user?.profile ? user.profile : '/assets/blank-profile-picture-973460_640.webp'} 
+              alt='profile' 
+              className='w-16 my-1 object-cover select-none h-16 justify-center m-auto rounded-full' 
+          />
             <h2 className='text-xl font-bold py-3 capitalize'>{user?.name}</h2>
             <p className='text-sm font-medium w-full md:w-2/3 justify-center m-auto pb-3'>
             {user?.bio ? (user.bio.trim() === "" ? "Nothing to see here" : user.bio) : "Nothing to see here"}
@@ -45,6 +45,7 @@ const page = () => {
             <UpdateProfile/>
             <h2 className='font-bold text-2xl '>Author blogs</h2>
         </div>
+        {user?.blogs && user.blogs.length > 0 ?
         <div className='grid grid-rows-1 grid-cols-1 sm:grid-cols-2 gap-8  py-8'>
         {user?.blogs.map((item, index) => (
           <Link key={index} href={`/blog/${item.blogId}`}>
@@ -66,10 +67,16 @@ const page = () => {
           </div>
           </Link>
         ))}
-
-       
-        
+        </div>:
+        <div className=' justify-center h-60 flex flex-col items-center m-auto w-full '>
+        <span ><SiPeakdesign size={55} /></span>
+        <span className='font-semibold'>Write your 1st Blog</span>
+        <Link href={'/write'} className='my-5'>
+        <div className='  flex justify-center m-auto '>
+        <span className='rounded-full bg-green-750 py-1 text-base px-8 font-semibold text-white'>let&apos;s Write</span>
         </div>
+        </Link>
+        </div>}
     </div>
     </>
   )

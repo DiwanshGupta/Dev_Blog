@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config={
+    port:process.env.PORT,
     frontend_url:process.env.FrontEndURl,
     jwt_secret_key:process.env.JWT_SECRET,
     mongoUrl:process.env.MONGO_URL,

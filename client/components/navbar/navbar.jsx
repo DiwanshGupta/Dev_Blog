@@ -26,7 +26,7 @@ const Navbar = () => {
     }
 
     useEffect(() => {
-      dispatch(currentuser()); // Fetch current user on component mount
+      dispatch(currentuser()); 
     }, [dispatch]);
   
   return (
@@ -60,6 +60,7 @@ const Navbar = () => {
           >
         {user?<>
          <Link href='/profile'  
+         onClick={closeDropdown}
            >
          <div className='hidden items-center mr-16 hover:text-green-750 text-white rounded-full font-bold md:flex '>
          {user?.profile ? (
@@ -100,7 +101,6 @@ const Navbar = () => {
         </div>
       </div>
     
-      {/* Slide-in Mobile Menu */}
       <div
         className={`fixed top-0 right-0 h-full bg-blue-850 text-white w-64 transform transition-transform duration-700 ease-in-out ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
@@ -125,12 +125,18 @@ const Navbar = () => {
         <Link href='' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >About</Link>
         <Link href='' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >Contact</Link>
         {user?
+        <>
          <Link href='/profile'  onClick={toggleMenu}>
          <div className='mr-5 md:hidden gap-2 items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
          <CgProfile size={25} />
            Profile
          </div>
          </Link>
+         <div className='mr-5 md:hidden gap-2 items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'  onClick={handleLogout}>
+          <FaPowerOff size={20} />
+           Logout
+         </div>
+         </>
         :
         <Link href='/signup'>
         <div className='mr-5 md:hidden  items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
@@ -138,10 +144,7 @@ const Navbar = () => {
           Signup
         </div>
         </Link>}
-        <div className='mr-5 md:hidden gap-2 items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'  onClick={handleLogout}>
-            <FaPowerOff size={20} />
-             Logout
-             </div>
+       
       </div>
     </nav>
   )

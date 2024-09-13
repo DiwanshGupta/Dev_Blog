@@ -1,6 +1,56 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import { FaSearch } from "react-icons/fa";
+import instance from '../../utils/axios';
+import Link from 'next/link';
 const page = () => {
+    const [blogs,setBlogs]=useState()
+    const [loading, setLoading] = useState(true); 
+   
+    const fetchdata=async()=>{
+        try {
+            const response=await instance('/user/get/all/Blog')
+            if(response.status===200){
+                setBlogs(response.data)
+                setLoading(false);
+            }
+        } catch (error) {
+            console.log("error",error.message)
+            setLoading(false);
+        }      
+    }
+    const formattedDate = (data) => {
+      
+        if (!data) {
+          return 'Invalid date';
+        }
+      
+        const date = new Date(data);
+      
+        if (isNaN(date.getTime())) {
+          return 'Invalid date';
+        }
+      const newDate=date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'UTC' 
+      });
+        return newDate
+      };
+      
+
+    useEffect(()=>{
+        fetchdata()
+    },[])
+
+    if (loading) {
+        return (
+            <div className='flex items-center justify-center h-screen py-8'>
+                <div className="loader"></div> {/* You can customize your loader styles here */}
+            </div>
+        );
+    }
   return (
     <div className='' >
         <div className='bgimageLogin p-10 text-white  md:pt-24'>
@@ -40,76 +90,36 @@ const page = () => {
         </div>
         </div>
         <div className='md:p-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3  '>
-        <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
-            <div className='  w-full   rounded-md '>
-            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full object-cover h-48  rounded-md '/>
+        {blogs?.map((item, index) => (
+            <Link key={index} href={`/blog/${item.blogId}`}>
+             <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
+             <div className='  w-full   rounded-md '>
+             <img src={item.blogImage || '/assets/visax-5jgvVlkI0mw-unsplash.jpg'} className=' w-full object-cover h-48  rounded-md '/>
+             </div>
+             <div className='flex font-semibold flex-col  justify-between'>
+                 <div className='text-blue-850'>
+                 {item.title.slice(0,20)}
+                 </div>
+                 <div className='py-3 text-gray-400 text-xs w-full'>
+                 <div dangerouslySetInnerHTML={{ __html: item.content.slice(0, 100) }} />
+                 </div>
+                 <div className='py-3 gap-3 text-gray-500 text-xs flex flex-wrap w-full'>
+                {item.tags?.map((tag, tagIndex) => (
+                    <div 
+                    key={tagIndex} 
+                    className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'
+                    >
+                    {tag}
+                    </div>
+                ))}
+                </div>
+                 <div className='text-xs justify-between flex flex-row text-black' >
+                 By {item?.author?.name}<span className='text-gray-400'> - {formattedDate(item?.createdAt)}</span>
+                 </div>
+             </div>
             </div>
-            <div className='flex font-semibold flex-col  justify-between'>
-                <div className='text-blue-850'>
-                What Happened To The Clippers?
-                </div>
-                <div className='py-3 text-gray-400 text-xs w-full'>
-                Stanley Cup from Playoffs format, qualification system 
-                Stanley Cup
-                </div>
-                <div className='py-3 gap-3 text-gray-500 text-xs flex flex-wrap w-full'>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                </div>
-                <div className='text-xs justify-between flex flex-row text-black' >
-                By Diwansh Gupta<span className='text-gray-400'> - Mar-1,2024</span>
-                </div>
-            </div>
-        </div>
-        <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
-            <div className='  w-full   rounded-md '>
-            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full object-cover h-48  rounded-md '/>
-            </div>
-            <div className='flex font-semibold flex-col  justify-between'>
-                <div className='text-blue-850'>
-                What Happened To The Clippers?
-                </div>
-                <div className='py-3 text-gray-400 text-xs w-full'>
-                Stanley Cup from Playoffs format, qualification system 
-                Stanley Cup
-                </div>
-                <div className='py-3 gap-3 text-gray-500 text-xs flex flex-wrap w-full'>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                </div>
-                <div className='text-xs justify-between flex flex-row text-black' >
-                By Diwansh Gupta<span className='text-gray-400'> - Mar-1,2024</span>
-                </div>
-            </div>
-        </div>
-        <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
-            <div className='  w-full   rounded-md '>
-            <img src='/assets/samsung-memory-o4oYRBB1BEg-unsplash.jpg' className=' w-full object-cover h-48  rounded-md '/>
-            </div>
-            <div className='flex font-semibold flex-col  justify-between'>
-                <div className='text-blue-850'>
-                What Happened To The Clippers?
-                </div>
-                <div className='py-3 text-gray-400 text-xs w-full'>
-                Stanley Cup from Playoffs format, qualification system 
-                Stanley Cup
-                </div>
-                <div className='py-3 gap-3 text-gray-500 text-xs flex flex-wrap w-full'>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                <div className='bg-slate-300 border-gray-400 border-[1px] rounded-full py-1 px-4'>Nba session</div>
-                </div>
-                <div className='text-xs justify-between flex flex-row text-black' >
-                By Diwansh Gupta<span className='text-gray-400'> - Mar-1,2024</span>
-                </div>
-            </div>
-        </div>
-        
+        </Link>
+        ))}
         </div>
         </div>
     </div>
