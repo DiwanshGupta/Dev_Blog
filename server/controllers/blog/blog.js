@@ -1,11 +1,10 @@
-import { customAlphabet } from "nanoid";
+import { randomBytes } from 'crypto';
 import Blog from "../../model/blog.js";
 import { User } from "../../model/user.js";
 import { uploadonCloudinary } from "../../utils/cloudinary.js";
 import Comment from "../../model/comments.js";
 
-const alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZ#$@!#$%^)&>"*^:';  
-const generateUserId = customAlphabet(alphabet, 8);
+const generateBlogId = () => randomBytes(12).toString('hex');
 
 export const createBlog = async (req, res) => {
     try {
@@ -24,8 +23,8 @@ export const createBlog = async (req, res) => {
         const cloudinaryResponse = await uploadonCloudinary(localFilepath,folder);
         console.log("user uid",user.uuid)
         if (cloudinaryResponse) {   
-            const blogId =generateUserId()
-            const blog=await Blog.create({
+          const blogId = generateBlogId();
+          const blog=await Blog.create({
                 blogId,
                 title,
                 tags,
@@ -131,3 +130,52 @@ export const commentOnBlog=async(req,res)=>{
     res.status(500).json({ error: 'Server Error' });
   }
 }
+
+export const getBlogpage = async (req, res) => {
+  try {
+    const { search, query, page , limit = 2 } = req.body;  
+    const skip = (page - 1) * limit; 
+
+    console.log("quesry",query)
+    let filter = {};
+    if (search) {
+      filter = { title: { $regex: search, $options: 'i' } }; 
+    }
+
+    
+    const blogs = await Blog.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    
+    const total = await Blog.countDocuments(filter);
+    res.status(200).json({
+      success: true,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      blogs,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+};
+
+export const getBlogById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const blogid=req.blog
+    console.log("is",blogid)
+    const blog = await Blog.findOne({blogId:id});
+
+    if (!blog) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+
+    res.status(200).json({ success: true, blog });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+};

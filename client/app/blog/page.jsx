@@ -3,17 +3,32 @@ import React, { useEffect, useState } from 'react'
 import { FaSearch } from "react-icons/fa";
 import instance from '../../utils/axios';
 import Link from 'next/link';
+import {  useRouter, useSearchParams } from 'next/navigation';
+
 const page = () => {
+    const searchParams = useSearchParams();
+    const page = Number(searchParams.get('page')) || 1;
+    const router=useRouter()
     const [blogs,setBlogs]=useState()
     const [loading, setLoading] = useState(true); 
+    const [search,setSearch]=useState('')
+    const [totalPages, setTotalPages] = useState(0);
    
-    const fetchdata=async()=>{
+    const fetchdata=async(page)=>{
         try {
-            const response=await instance('/user/get/all/Blog')
-            if(response.status===200){
-                setBlogs(response.data)
-                setLoading(false);
-            }
+          const response = await instance.post('/user/get/page/Blog', { page,search },
+            {
+              headers: {
+                "Content-Type": "application/json"
+              },
+            } 
+          );
+          if (response.status === 200) {
+            setBlogs(response.data.blogs);
+            setTotalPages(response.data.totalPages);
+            setCurrentPage(response.data.currentPage);
+            setLoading(false);
+          }
         } catch (error) {
             console.log("error",error.message)
             setLoading(false);
@@ -38,16 +53,33 @@ const page = () => {
       });
         return newDate
       };
-      
 
-    useEffect(()=>{
-        fetchdata()
-    },[])
+      const handleSearch=()=>{
+        console.log("sas",search)
+        router.push(`?search=${search}`); 
+      }
+
+      const handlePageChange = (page) => {
+        router.push(`?page=${page}`); 
+      };
+    
+
+      const clearParams = () => {
+        router.push({ pathname: router.pathname });
+      };
+      useEffect(() => {
+        
+        const timeoutId = setTimeout(() => {
+          fetchdata(page);
+        }, 500);
+    
+        return () => clearTimeout(timeoutId);  
+      }, [searchParams]);
 
     if (loading) {
         return (
             <div className='flex items-center justify-center h-screen py-8'>
-                <div className="loader"></div> {/* You can customize your loader styles here */}
+                <div className="loader"></div> 
             </div>
         );
     }
@@ -57,38 +89,24 @@ const page = () => {
         <div className='text-xl  font-semibold hover:text-green-750 text-center'>
         Unlock a world of insights—your search for the perfect blog starts here!
         </div>
-        <div className='w-64  sm:w-96 m-auto px-5 relative my-3 bg-white rounded-full   justify-center'>
-            <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className={`  w-[95%]  py-2 text-gray-900 outline-none placeholder-gray-400  sm:text-sm  `}
-                placeholder="Search Blogs"
-                />
-                <span className='absolute right-2 top-2 text-blue-850 '>
-                <FaSearch size={22} />
-                </span>
-             </div>
+          <div className='w-64  sm:w-96 m-auto px-5 relative my-3 bg-white rounded-full   justify-center'>
+              <input
+                  id="search"
+                  name="search"
+                  type="search"
+                  value={search}
+                  onChange={(e)=>setSearch(e.target.value)}
+                  required
+                  className={`  w-[95%]  py-2 text-gray-900 outline-none placeholder-gray-400  sm:text-sm  `}
+                  placeholder="Search Blogs"
+                  />
+                  <button onClick={handleSearch} className='absolute right-2 top-2 text-blue-850 '>
+                  <FaSearch size={22} />
+                  </button >
+          </div>
         </div>
         <div className='px-10 md:px-24 '>
-        <div className='flex justify-start  text-white font-semibold py-3 md:flex-row'>
-        <div className='flex flex-wrap items-center justify-center gap-3'>
-        <div className=' p-1 cursor-pointer text-gray-600 px-5 bg-opacity-95 border-b-green-750 border-2 hover:text-green-750'>
-        All</div>
-        <div className=' p-1 cursor-pointer text-gray-600 px-5 bg-opacity-95 border-b-green-750 border-2 hover:text-green-750'>
-        Food</div>
-        <div className=' p-1 cursor-pointer text-gray-600 px-5 bg-opacity-95 border-b-green-750 border-2 hover:text-green-750'>
-        Sports</div>
-        <div className=' p-1 cursor-pointer text-gray-600 px-5 bg-opacity-95 border-b-green-750 border-2 hover:text-green-750'>
-        Cosmo</div>
-        <div className=' p-1 cursor-pointer text-gray-600 px-5 bg-opacity-95 border-b-green-750 border-2 hover:text-green-750'>
-        Fashion</div>
-        <div className=' p-1 cursor-pointer text-gray-600 px-5 bg-opacity-95 border-b-green-750 border-2 hover:text-green-750'>
-        Travel</div>
-        </div>
-        </div>
+
         <div className='md:p-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3  '>
         {blogs?.map((item, index) => (
             <Link key={index} href={`/blog/${item.blogId}`}>
@@ -121,7 +139,41 @@ const page = () => {
         </Link>
         ))}
         </div>
+        <div className='justify-center my-5 flex items-center w-full'>
+            <nav aria-label="Page navigation">
+              <ul className="flex items-center -space-x-px h-10 text-base">
+                <li>
+                  <button
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 1}
+                    className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+                  >
+                    Previous
+                  </button>
+                </li>
+                {[...Array(totalPages)].map((_, index) => (
+                  <li key={index}>
+                    <button
+                      onClick={() => handlePageChange(index + 1)}
+                      className={`flex items-center justify-center px-4 h-10 leading-tight ${page === index + 1 ? 'bg-green-750 text-white' : 'text-gray-500 bg-white'} border border-gray-300 hover:bg-gray-100 hover:text-gray-700`}
+                    >
+                      {index + 1}
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === totalPages}
+                    className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+                  >
+                    Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
         </div>
+      </div>
     </div>
   )
 }

@@ -39,24 +39,21 @@ const Navbar = () => {
         </div>
         </Link>
 
-        {/* Hamburger Icon for Mobile */}
         <div className='md:hidden flex items-center'>
           <button onClick={toggleMenu} className='focus:outline-none'>
             < HiOutlineMenuAlt3  size={30} />
           </button>
         </div>
 
-        {/* Links - Hidden on Mobile */}
         <div className='hidden md:flex gap-8 items-center'>
           <Link href='/blog' className='hover:text-green-750 flex items-center'>Blogs</Link>
-          <Link href='/write' className='hover:text-green-750 flex items-center'>Write</Link>
+          {user && (<Link href='/write' className='hover:text-green-750 flex items-center'>Write</Link>)}
           <Link href='' className='hover:text-green-750 flex items-center'>About</Link>
           <Link href='' className='hover:text-green-750 flex items-center'>Contact</Link>
         </div>
         
         <div className='hidden   md:block md:relative'
           onMouseEnter={() => setIsDropdownOpen(true)}
-          // onMouseLeave={closeDropdown}
           >
         {user?<>
          <Link href='/profile'  
@@ -121,13 +118,13 @@ const Navbar = () => {
         </span>
         </div>
         <Link href='/blog' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu}>Blogs</Link>
-        <Link href='/write' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >Write</Link>
+        {user && (<Link href='/write' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >Write</Link>)}
         <Link href='' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >About</Link>
         <Link href='' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >Contact</Link>
         {user?
         <>
          <Link href='/profile'  onClick={toggleMenu}>
-         <div className='mr-5 md:hidden gap-2 items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
+         <div className='text-center md:hidden gap-2 items-center bg-white hover:text-green-750 text-blue-850 rounded-full px-8 font-bold flex py-1'>
          <CgProfile size={25} />
            Profile
          </div>

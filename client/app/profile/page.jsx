@@ -5,18 +5,20 @@ import UpdateProfile from "../../components/UpdateProfile/updateProfile"
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SiPeakdesign } from "react-icons/si";
+import { FaRegEdit } from 'react-icons/fa'
+import { MdDelete } from "react-icons/md";
 
 const page = () => {
   const user=useSelector((state)=>state.user?.user)
   const loading=useSelector((state)=>state.user?.loading)
     const router = useRouter();
-    useEffect(() => {
-      console.log("g",loading)
-      if (!user ) {
-        console.log("loadig",loading)
-        router.push('/login');
-      }
-    }, [loading, user, router]);
+    // useEffect(() => {
+    //   console.log("g",loading)
+    //   if (!user ) {
+    //     console.log("loadig",loading)
+    //     router.push('/login');
+    //   }
+    // }, [loading, user, router]);
   
     if (loading) {
       return (
@@ -48,24 +50,32 @@ const page = () => {
         {user?.blogs && user.blogs.length > 0 ?
         <div className='grid grid-rows-1 grid-cols-1 sm:grid-cols-2 gap-8  py-8'>
         {user?.blogs.map((item, index) => (
-          <Link key={index} href={`/blog/${item.blogId}`}>
           <div   className='flex p-3 justify-center m-auto hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750 flex-col lg:flex-row gap-5'>
-            <div className='w-full h-48 sm:h-32 m-auto justify-center sm:w-56   rounded-md'>
-              <img src={item.blogImage || '/assets/visax-5jgvVlkI0mw-unsplash.jpg'} alt={item.title} className='w-full h-full  object-cover m-auto justify-center rounded-md' />
+            <div className='w-full h-36   lg:w-2/5  rounded-md'>
+              <img src={item.blogImage} alt={item.title} className='w-full h-full   object-cover  rounded-md' />
             </div>
-            <div className='flex  font-semibold flex-col justify-between gap-3'>
-              <div className='text-gray-400'>
+            <div className='flex  font-semibold lg:w-3/5 flex-col justify-between gap-1'>
+              <div className='text-gray-400 flex flex-row justify-between'>
+                <div>
                 {item.title.slice(0,20)}
+                </div>
+                <div className=' flex flex-row gap-5 items-center'>
+                <Link className='hover:text-green-750' href={`/update/${item.blogId}`}>
+                <FaRegEdit  size={15} />
+                </Link>
+                <MdDelete size={15} />
+                </div>
               </div>
               <div className='text-sm sm:text-base md:text-sm w-full'>
-                <div dangerouslySetInnerHTML={{ __html: item.content.slice(0, 100) }} />
+              <Link key={index} href={`/blog/${item.blogId}`}>
+                <div dangerouslySetInnerHTML={{ __html: item.content.slice(0, 110) }} />
+              </Link>
               </div>
               <div className='text-xs sm:text-sm justify-between flex flex-row text-black'>
                 By {user.name} <span className='text-gray-400'> - {new Date(item.createdAt).toLocaleDateString()}</span>
               </div>
             </div>
           </div>
-          </Link>
         ))}
         </div>:
         <div className=' justify-center h-60 flex flex-col items-center m-auto w-full '>
