@@ -1,5 +1,5 @@
 import {Montserrat } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { ReduxProvider } from "../../redux/provider";
 import Footer from "../../components/footer/footer";
 import Navbar from "../../components/navbar/navbar";
