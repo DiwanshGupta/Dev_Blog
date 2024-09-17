@@ -4,13 +4,15 @@ import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2';
 import instance from '../../utils/axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import { currentuser } from '../../redux/feature/user/api';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const page = () => {
     const router = useRouter();
+    const dispatch = useDispatch();
     const user=useSelector((state)=>state.user?.user)
     const [form, setForm] = useState({
         title: '',
@@ -86,8 +88,9 @@ const page = () => {
                         text: 'Blog Published successfully!',
                         icon: 'success',
                     });
+                    dispatch(currentuser()); 
+                    router.push(`/blog/${response.data.blog.blogId}`)
                 }
-
 
             } catch (error) {
                 setLoading(false);

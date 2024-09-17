@@ -133,13 +133,17 @@ export const commentOnBlog=async(req,res)=>{
 
 export const getBlogpage = async (req, res) => {
   try {
-    const { search, query, page , limit = 2 } = req.body;  
+    const { search,  page , limit = 2 } = req.body;  
     const skip = (page - 1) * limit; 
 
-    console.log("quesry",query)
     let filter = {};
     if (search) {
-      filter = { title: { $regex: search, $options: 'i' } }; 
+      filter = { 
+        $or: [
+          { title: { $regex: search, $options: 'i' } },
+          { tags: { $regex: search, $options: 'i' } }
+        ]
+      }; 
     }
 
     
@@ -179,3 +183,52 @@ export const getBlogById = async (req, res) => {
     res.status(500).json({ error: 'Server Error' });
   }
 };
+
+export const UpdateBlogById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const blogid=req.blog
+    const {title,tags,content}=req.body
+    if (!title || !tags || !content) {
+      return res.status(400).send('Please fill the form');
+    }
+    
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      blogid,
+      { title, tags, content },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBlog) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+
+    return res.status(200).json({ success: true, blog: updatedBlog });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+};
+export const deleteBlogById=async(req,res)=>{
+  try {
+    const blogid=req.blog;
+    const {user}=req;
+  
+    const deletedBlog = await Blog.findByIdAndDelete(blogid);
+
+    if (!deletedBlog) {
+      return res.status(404).json({ error: 'Blog not found' });
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { $pull: { blogs: blogid } },
+      { new: true }
+    );
+    console.log("Updated User:", updatedUser);
+    return res.status(200).json({ success: true, message: 'Blog deleted successfully' });
+
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server Error' });
+  }
+}

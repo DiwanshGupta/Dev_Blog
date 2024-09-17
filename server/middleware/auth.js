@@ -11,6 +11,7 @@ export const isAuthenticate=async(req,res,next)=>{
     }
     const decodeToken=jwt.verify(ec_ls,jwt_secret)
     const userExist=await User.findOne({uuid:decodeToken.uuid})
+    console.log(userExist)
     if(!userExist){
         return res.status(404).json({message:"User Not Found"})
     }

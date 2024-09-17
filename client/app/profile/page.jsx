@@ -1,14 +1,18 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import {  useSelector } from 'react-redux'
+import {  useDispatch, useSelector } from 'react-redux'
 import UpdateProfile from "../../components/UpdateProfile/updateProfile"
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SiPeakdesign } from "react-icons/si";
 import { FaRegEdit } from 'react-icons/fa'
 import { MdDelete } from "react-icons/md";
+import Swal from 'sweetalert2'
+import { currentuser } from '../../redux/feature/user/api'
+import instance from '../../utils/axios'
 
 const page = () => {
+  const dispatch = useDispatch();
   const user=useSelector((state)=>state.user?.user)
   const loading=useSelector((state)=>state.user?.loading)
     const router = useRouter();
@@ -19,7 +23,40 @@ const page = () => {
     //     router.push('/login');
     //   }
     // }, [loading, user, router]);
-  
+    const deleteBlog = async (id) => {
+      // Show the confirmation popup
+      const result = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+      });
+    
+      // Proceed only if the user confirmed
+      if (result.isConfirmed) {
+        try {
+          const response = await instance.delete(`/user/delete/blog/${id}`);
+          if (response.status === 200) {
+            dispatch(currentuser()); 
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Blog has been deleted.',
+              icon: 'success',
+            });
+          }
+        } catch (error) {
+          console.error("Error deleting blog:", error);
+          Swal.fire({
+            title: 'Some error occurred',
+            text: error.response?.data?.message || 'Try again later',
+            icon: 'error',
+          });
+        }
+      }
+    };
+    
     if (loading) {
       return (
         <div className='flex  items-center w-fit  h-screen py-8  justify-center m-auto'>
@@ -50,7 +87,7 @@ const page = () => {
         {user?.blogs && user.blogs.length > 0 ?
         <div className='grid grid-rows-1 grid-cols-1 sm:grid-cols-2 gap-8  py-8'>
         {user?.blogs.map((item, index) => (
-          <div   className='flex p-3 justify-center m-auto hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750 flex-col lg:flex-row gap-5'>
+          <div  key={index} className='flex p-3 justify-center m-auto hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750 flex-col lg:flex-row gap-5'>
             <div className='w-full h-36   lg:w-2/5  rounded-md'>
               <img src={item.blogImage} alt={item.title} className='w-full h-full   object-cover  rounded-md' />
             </div>
@@ -63,7 +100,9 @@ const page = () => {
                 <Link className='hover:text-green-750' href={`/update/${item.blogId}`}>
                 <FaRegEdit  size={15} />
                 </Link>
+                <button onClick={()=>deleteBlog(item.blogId)}>
                 <MdDelete size={15} />
+                </button>
                 </div>
               </div>
               <div className='text-sm sm:text-base md:text-sm w-full'>

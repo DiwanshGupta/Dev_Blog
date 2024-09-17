@@ -3,14 +3,16 @@ import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic';
 import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useRouter } from 'next/navigation';
 import instance from '../../../utils/axios';
+import { currentuser } from '../../../redux/feature/user/api';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const page = () => {
     const router = useRouter();
+    const dispatch = useDispatch();
     const params=useParams()
     const { id } = params
     console.log("id",id)
@@ -18,6 +20,7 @@ const page = () => {
     const [form, setForm] = useState({
         title: '',
         tags: [],
+        blogImage:'',
         content: ''
     });
     const [selectedImage, setSelectedImage] = useState(null);
@@ -49,11 +52,19 @@ const page = () => {
         try {
             const response=await instance(`/user/update/blog/${id}`)
             console.log(response)
-
+            if(response.status===200){
+                setLoading(false);
+                const { title, tags, content, blogImage } = response.data.blog;
+                setForm({
+                    title: title || '',
+                    tags: tags || [],
+                    content: content || '',
+                    blogImage
+                });
+            }
         } catch (error) {
             setLoading(false);
-            console.error("Error uploading image:", error);
-            Swal.fire({
+                Swal.fire({
                 title: 'Some error occured',
                 text:   error.response?.data?.message || 'try again after Sometime',
                 icon: 'warning',
@@ -69,41 +80,33 @@ const page = () => {
     };
     const handleSubmit = async(e) => {
         e.preventDefault();
-                if (!form.title || !form.content) {
-                    Swal.fire({
-                        title: 'Form Incomplete',
-                        text: 'Please fill out all form fields.',
-                        icon: 'warning',
-                    });
-                    return;
-                }
+            const cleanContent = form.content.replace(/<(.|\n)*?>/g, '').trim();
+            if (!form.title || !cleanContent) {
+                Swal.fire({
+                    title: 'Form Incomplete',
+                    text: 'Please fill out all form fields.',
+                    icon: 'warning',
+                });
+                return;
+            }
             
-                if (!selectedImage) {
-                    Swal.fire({
-                        title: 'Image Missing',
-                        text: 'Please upload the image.',
-                        icon: 'warning',
-                    });
-                    return;
-                }
-            const formData = new FormData();
-            formData.append("blogImg", selectedImage); 
-            formData.append("data", JSON.stringify(form));  
             setLoading(true);
             try {
-                const response=await instance.post("/user/update/blog",formData,{
+                const response=await instance.post(`/user/update/blog/${id}`,form,{
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        "Content-Type": "application/json"
                     },
                 });
                 console.log(response.data)
                 if(response.status===200){
+                    dispatch(currentuser()); 
                     setLoading(false);
                     Swal.fire({
                         title: 'Success',
                         text: 'Blog Published successfully!',
                         icon: 'success',
                     });
+                    router.push(`/blog/${response.data.blog.blogId}`)
                 }
 
 
@@ -155,19 +158,9 @@ const page = () => {
                     />
                 </div>
                 
-                <div>
-                <label htmlFor="image" className="cursor-pointer">
-                <h2 className='py-2 font-semibold'>Upload blog image</h2>
-                </label>
-                <input
-                        type="file"
-                        id="image"
-                        name="image"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className={`w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm outline-none placeholder-gray-400 sm:text-sm`}
-                        placeholder="your file"
-                    />
+                <div className=" rounded-md border-2 border-gray-300">
+                    {console.log("image",form)}
+                <img src={form.blogImage} className='w-full object-cover p-3 rounded-md h-44'/>
                 </div>
                 <div className='py-3'>
                 <h2 className='py-2 font-semibold'>Enter tags</h2>
