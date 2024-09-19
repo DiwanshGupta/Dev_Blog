@@ -4,11 +4,12 @@ import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import Swal from 'sweetalert2'
 import instance from '../../../utils/axios';
+import { useDispatch } from 'react-redux';
 
 const VerifyEmail = () => {
   const {id}= useParams();  
   const router=useRouter()
-
+  const dispatch=useDispatch()
  
   const verifyAccount = async () => {
     try {
@@ -16,6 +17,7 @@ const VerifyEmail = () => {
         params: { token:id }, 
       });
       if(response.status===201){
+        dispatch(getuser(response.data.user)); 
         router.push('/profile')
         Swal.fire({
             title: 'Verification',

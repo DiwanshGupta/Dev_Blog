@@ -48,7 +48,7 @@ const Navbar = () => {
         <div className='hidden md:flex gap-8 items-center'>
           <Link href='/blog' className='hover:text-green-750 flex items-center'>Blogs</Link>
           {user && (<Link href='/write' className='hover:text-green-750 flex items-center'>Write</Link>)}
-          <Link href='' className='hover:text-green-750 flex items-center'>About</Link>
+          <Link href='/about' className='hover:text-green-750 flex items-center'>About</Link>
           <Link href='' className='hover:text-green-750 flex items-center'>Contact</Link>
         </div>
         
@@ -119,7 +119,7 @@ const Navbar = () => {
         </div>
         <Link href='/blog' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu}>Blogs</Link>
         {user && (<Link href='/write' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >Write</Link>)}
-        <Link href='' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >About</Link>
+        <Link href='/about' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >About</Link>
         <Link href='' className='hover:text-green-750 justify-center  w-full items-center text-center' onClick={toggleMenu} >Contact</Link>
         {user?
         <>
