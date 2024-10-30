@@ -4,6 +4,10 @@ import { FaSearch } from "react-icons/fa";
 import instance from '../../utils/axios';
 import Link from 'next/link';
 import {  useRouter, useSearchParams } from 'next/navigation';
+import { FaHeart } from "react-icons/fa";
+import { FaRegHeart } from 'react-icons/fa6';
+import { useSelector } from 'react-redux';
+import Swal from 'sweetalert2';
 
 const BlogData = () => {
     const searchParams = useSearchParams();
@@ -11,9 +15,10 @@ const BlogData = () => {
     const router=useRouter()
     const [blogs,setBlogs]=useState()
     const [loading, setLoading] = useState(true); 
+    const user=useSelector((state)=>state.user?.user)
     const [search,setSearch]=useState('')
     const [totalPages, setTotalPages] = useState(0);
-   
+    const [likedBlogs, setLikedBlogs] = useState({});
     const fetchdata=async(page)=>{
         try {
           const response = await instance.post('/user/get/page/Blog', { page,search },
@@ -25,15 +30,56 @@ const BlogData = () => {
           );
           if (response.status === 200) {
             setBlogs(response.data.blogs);
+            console.log(response.data.blogs);
+            const blogsArray = Array.isArray(response.data.blogs) ? response.data.blogs : [];
+            const initialLikes = blogsArray.reduce((acc, blog) => {
+              acc[blog._id] = {
+                liked:blog.likes.includes(user?._id),
+              count: blog.likes.length }
+              return acc;
+            }, {});
+            setLikedBlogs(initialLikes);
+        
             setTotalPages(response.data.totalPages);
             setCurrentPage(response.data.currentPage);
-            setLoading(false);
+             setLoading(false);
           }
         } catch (error) {
             console.log("error",error.message)
             setLoading(false);
         }      
     }
+    const handleLike = async (blogId,itemId) => {
+
+      if (!user) {
+        Swal.fire({
+          title: 'Unauthorized',
+          text: 'Please login to like the blogs',
+          icon: 'warning',
+        })
+      return;
+      }
+    
+      try {
+        const response = await instance.post(`/user/blogs/${blogId}/like`);
+        
+        const updatedLikes = response.data.likes;
+        const newCount = updatedLikes.length;
+        setLikedBlogs((prevLikes) => ({
+          ...prevLikes,
+          [itemId]: {liked:updatedLikes.includes(user._id),
+            count: newCount, 
+          } 
+        }));
+      } catch (error) {
+        console.error('Error liking the blog:', error);
+        setLikedBlogs((prevLikes) => ({
+          ...prevLikes,
+          [blogId]: wasLiked, 
+        }));
+      }
+    };
+    
     const formattedDate = (data) => {
       
         if (!data) {
@@ -68,7 +114,7 @@ const BlogData = () => {
         router.push({ pathname: router.pathname });
       };
       useEffect(() => {
-        
+ 
         const timeoutId = setTimeout(() => {
           fetchdata(page);
         }, 500);
@@ -103,14 +149,14 @@ const BlogData = () => {
                   <button onClick={handleSearch} className='absolute right-2 top-2 text-blue-850 '>
                   <FaSearch size={22} />
                   </button >
-          </div>
+          </div> 
         </div>
         <div className='px-10 md:px-24 '>
 
         <div className='md:p-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3  '>
         {blogs?.map((item, index) => (
-            <Link key={index} href={`/blog/${item.blogId}`}>
-             <div className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
+            // <Link key={index} href={`/blog/${item.blogId}`}>
+             <div key={index} className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
              <div className='  w-full   rounded-md '>
              <img src={item.blogImage || '/assets/visax-5jgvVlkI0mw-unsplash.jpg'} className=' w-full object-cover h-48  rounded-md '/>
              </div>
@@ -131,12 +177,20 @@ const BlogData = () => {
                     </div>
                 ))}
                 </div>
-                 <div className='text-xs justify-between flex flex-row text-black' >
-                 By {item?.author?.name}<span className='text-gray-400'> - {formattedDate(item?.createdAt)}</span>
-                 </div>
+                <div className='text-xs justify-between flex flex-row text-black'>
+                <button className='flex-row flex items-center gap-3' onClick={() => handleLike(item.blogId,item._id)}>
+                {likedBlogs[item._id].liked ? (
+                  <FaHeart size={20} color='red' />
+                ) : (
+                  <FaRegHeart size={20} color='red' />
+                )}
+                <span>{likedBlogs[item._id]?.count || 0} Likes</span>
+              </button>
+                    <span className='text-gray-400'> - {formattedDate(item?.createdAt)}</span>
+                  </div>
              </div>
             </div>
-        </Link>
+        // </Link>
         ))}
         </div>
         <div className='justify-center my-5 flex items-center w-full'>

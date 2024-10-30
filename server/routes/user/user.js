@@ -2,7 +2,7 @@ import express from "express"
 import { upload } from "../../middleware/multer.js"
 import { userBio, userProfile } from "../../controllers/user/user.js"
 import { isAuthenticate } from "../../middleware/auth.js"
-import { commentOnBlog, createBlog, deleteBlogById, getallBlog, getBlogById, getBlogpage, getsingleBlog, UpdateBlogById } from "../../controllers/blog/blog.js"
+import { commentOnBlog, createBlog, deleteBlogById, getallBlog, getBlogById, getBlogpage, getsingleBlog, likeBlog, UpdateBlogById } from "../../controllers/blog/blog.js"
 import { userBlogExist } from "../../middleware/userblog.js"
 
 const userRouter=express.Router()
@@ -17,7 +17,7 @@ userRouter.post('/get/page/Blog',getBlogpage)
 userRouter.get('/update/blog/:id',isAuthenticate,userBlogExist,getBlogById)
 userRouter.post('/update/blog/:id',isAuthenticate,userBlogExist,UpdateBlogById)
 userRouter.delete('/delete/blog/:id',isAuthenticate,userBlogExist,deleteBlogById)
-
+userRouter.post('/blogs/:blogId/like', isAuthenticate, likeBlog);
 
 
 
