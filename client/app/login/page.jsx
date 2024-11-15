@@ -129,11 +129,11 @@ const page = () => {
                         I Agree Terms & Conditions
                     </label>
                 </div>
-                <div className="text-sm">
+                {/* <div className="text-sm">
                 <span className="font-medium text-indigo-700 hover:text-indigo-500">
                 Forgot your password?
                 </span>
-                </div>
+                </div> */}
             </div>
             <div>
                 <button

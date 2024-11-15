@@ -155,12 +155,15 @@ const BlogData = () => {
 
         <div className='md:p-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3  '>
         {blogs?.map((item, index) => (
-            // <Link key={index} href={`/blog/${item.blogId}`}>
              <div key={index} className='flex p-3 justify-center m-auto  hover:shadow-md cursor-pointer rounded-md hover:bg-slate-100 hover:text-green-750    flex-col   gap-5  '>
+            <Link key={index} href={`/blog/${item.blogId}`}>
+
              <div className='  w-full   rounded-md '>
              <img src={item.blogImage || '/assets/visax-5jgvVlkI0mw-unsplash.jpg'} className=' w-full object-cover h-48  rounded-md '/>
              </div>
+             </Link>
              <div className='flex font-semibold flex-col  justify-between'>
+              
                  <div className='text-blue-850'>
                  {item.title.slice(0,20)}
                  </div>
@@ -178,7 +181,7 @@ const BlogData = () => {
                 ))}
                 </div>
                 <div className='text-xs justify-between flex flex-row text-black'>
-                <button className='flex-row flex items-center gap-3' onClick={() => handleLike(item.blogId,item._id)}>
+                <button className='flex-row z-40 flex items-center gap-3' onClick={() => handleLike(item.blogId,item._id)}>
                 {likedBlogs[item._id].liked ? (
                   <FaHeart size={20} color='red' />
                 ) : (
@@ -190,7 +193,6 @@ const BlogData = () => {
                   </div>
              </div>
             </div>
-        // </Link>
         ))}
         </div>
         <div className='justify-center my-5 flex items-center w-full'>
